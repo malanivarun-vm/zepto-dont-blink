@@ -1,0 +1,7 @@
+{
+  "name": "dont-blink-prototype",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/"
+  }
+}
