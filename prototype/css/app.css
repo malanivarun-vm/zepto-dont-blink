@@ -1,0 +1,109 @@
+/* Phone shell — 375px wide, centred on desktop */
+.phone-shell {
+  width: 375px;
+  min-height: 812px;
+  background: var(--c-bg);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--c-border);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Screen visibility toggle */
+.screen { display: none; flex-direction: column; height: 100%; min-height: 812px; }
+.screen.active { display: flex; }
+
+/* --- Typography --- */
+.h1   { font-size: 32px; font-weight: 900; color: var(--c-white); line-height: 1.1; }
+.h2   { font-size: 22px; font-weight: 800; color: var(--c-white); }
+.h3   { font-size: 16px; font-weight: 700; color: var(--c-white); }
+.body { font-size: 14px; line-height: 1.55; color: var(--c-muted); }
+.label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+/* --- Buttons --- */
+.btn {
+  width: 100%; padding: 17px 20px;
+  border: none; border-radius: var(--r-md);
+  font-family: var(--font); font-size: 15px; font-weight: 800;
+  letter-spacing: 0.04em; cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn:active { opacity: 0.8; transform: scale(0.98); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--c-purple), var(--c-pink));
+  color: #fff;
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--c-border);
+  color: var(--c-muted);
+}
+
+/* --- Tier row (rules screen) --- */
+.tier-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px;
+  background: var(--c-dim); border-radius: var(--r-sm);
+  border: 1px solid var(--c-border);
+}
+.tier-row.reached { border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.07); }
+
+/* --- Progress bar --- */
+.prog-track {
+  width: 100%; height: 4px;
+  background: var(--c-dim); border-radius: 20px;
+}
+.prog-fill {
+  height: 100%; border-radius: 20px; width: 0%;
+  background: linear-gradient(90deg, var(--c-purple), var(--c-pink));
+  transition: width 0.5s linear;
+}
+
+/* --- Live badge --- */
+.live-badge {
+  display: flex; align-items: center; gap: 5px;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  background: var(--c-pink); border-radius: 50%;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* --- Scoop --- */
+#scoop-emoji {
+  position: absolute;
+  font-size: 101px; /* 27% of 375px */
+  line-height: 1;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 6px 24px rgba(124,58,237,0.5));
+  /* drift transition applied by scoop.js */
+}
+
+/* --- Calibration dot --- */
+#cal-dot {
+  position: absolute;
+  width: 22px; height: 22px;
+  background: var(--c-pink); border-radius: 50%;
+  box-shadow: 0 0 0 6px rgba(255,45,107,0.2);
+  transform: translate(-50%, -50%);
+  transition: left 0.7s var(--ease-out), top 0.7s var(--ease-out), opacity 0.3s;
+}
+
+/* --- Share canvas wrapper --- */
+#share-canvas {
+  border-radius: var(--r-md);
+  width: 100%;
+  max-width: 335px;
+}
