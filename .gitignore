@@ -1,0 +1,4 @@
+.DS_Store
+*.pdf
+.superpowers/brainstorm/*/state/
+node_modules/

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Don't Blink — User Flow</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f4f4f6;
+    padding: 32px 24px 48px;
+    min-height: 100vh;
+  }
+  .page-title { font-size: 22px; font-weight: 800; color: #1a1a1a; margin-bottom: 4px; }
+  .page-sub { font-size: 13px; color: #888; margin-bottom: 32px; }
+
+  .flow-row { display: flex; align-items: flex-start; gap: 0; margin-bottom: 20px; overflow-x: auto; padding-bottom: 8px; }
+  .flow-step { display: flex; align-items: flex-start; flex-shrink: 0; }
+  .step-wrap { display: flex; flex-direction: column; align-items: center; width: 148px; }
+  .step-num {
+    font-size: 10px; font-weight: 800; letter-spacing: 0.1em;
+    color: #aaa; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .phone {
+    width: 128px;
+    min-height: 230px;
+    border-radius: 22px;
+    padding: 12px 10px;
+    display: flex; flex-direction: column; align-items: center;
+    position: relative; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  }
+  .notch { width: 36px; height: 5px; background: rgba(255,255,255,0.15); border-radius: 3px; margin-bottom: 10px; flex-shrink: 0; }
+  .step-label {
+    margin-top: 10px; font-size: 11px; font-weight: 700; color: #555;
+    text-align: center; line-height: 1.4; max-width: 120px;
+  }
+  .arrow {
+    font-size: 20px; color: #ccc; margin-top: 90px; flex-shrink: 0;
+    padding: 0 2px;
+  }
+  .row-label {
+    font-size: 11px; font-weight: 800; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #999; margin-bottom: 10px;
+  }
+
+  /* ---- Screen colours ---- */
+  .sc-confirm { background: linear-gradient(160deg, #1a0a2e 0%, #2d0f52 100%); }
+  .sc-brief   { background: linear-gradient(160deg, #0f0a1a 0%, #1a0a2e 100%); }
+  .sc-count   { background: linear-gradient(160deg, #1a0a2e 0%, #3b0764 100%); }
+  .sc-stare   { background: linear-gradient(160deg, #0f0517 0%, #1e0b35 100%); }
+  .sc-blink   { background: linear-gradient(160deg, #1a0505 0%, #3b0808 100%); }
+  .sc-reward  { background: linear-gradient(160deg, #0a1a0f 0%, #0d2b15 100%); }
+  .sc-share   { background: linear-gradient(160deg, #7c3aed 0%, #a855f7 100%); }
+
+  /* ---- Utility ---- */
+  .tag { font-size: 7px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 7px; border-radius: 20px; margin-bottom: 7px; }
+  .tag-purple { background: rgba(168,85,247,0.25); color: #c084fc; }
+  .tag-pink   { background: rgba(255,45,107,0.25); color: #ff6b9d; }
+  .tag-green  { background: rgba(34,197,94,0.25); color: #4ade80; }
+  .tag-red    { background: rgba(239,68,68,0.3); color: #f87171; }
+  .tag-gold   { background: rgba(245,158,11,0.25); color: #fbbf24; }
+  .tag-white  { background: rgba(255,255,255,0.2); color: white; }
+
+  .wht  { color: white; }
+  .dim  { color: rgba(255,255,255,0.45); }
+  .pink { color: #ff2d6b; }
+  .purp { color: #a855f7; }
+  .gold { color: #f59e0b; }
+  .grn  { color: #4ade80; }
+  .sz7  { font-size: 7px; }
+  .sz8  { font-size: 8px; }
+  .sz9  { font-size: 9px; }
+  .sz10 { font-size: 10px; }
+  .sz11 { font-size: 11px; }
+  .sz13 { font-size: 13px; }
+  .sz18 { font-size: 18px; }
+  .sz28 { font-size: 28px; }
+  .sz36 { font-size: 36px; }
+  .bold { font-weight: 800; }
+  .med  { font-weight: 600; }
+  .center { text-align: center; }
+  .w100 { width: 100%; }
+  .mb2 { margin-bottom: 2px; }
+  .mb4 { margin-bottom: 4px; }
+  .mb6 { margin-bottom: 6px; }
+  .mb8 { margin-bottom: 8px; }
+  .mb10{ margin-bottom: 10px; }
+  .mb12{ margin-bottom: 12px; }
+  .lh14{ line-height: 1.4; }
+  .lh16{ line-height: 1.6; }
+
+  .btn {
+    width: 100%; padding: 7px 0; border-radius: 20px;
+    font-size: 8px; font-weight: 800; text-align: center; letter-spacing: 0.08em;
+  }
+  .btn-pink   { background: #ff2d6b; color: white; }
+  .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); }
+  .btn-green  { background: #16a34a; color: white; }
+  .btn-purple { background: #7c3aed; color: white; }
+  .btn-white  { background: white; color: #7c3aed; }
+  .btn-gold   { background: #f59e0b; color: #1a1a1a; }
+
+  .divider { width: 100%; height: 1px; background: rgba(255,255,255,0.08); margin: 8px 0; }
+
+  /* Screen-specific */
+  .camera-view {
+    width: 100%; height: 52px;
+    background: #0a0a0a; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 6px; position: relative; overflow: hidden;
+  }
+  .camera-face { font-size: 22px; }
+  .camera-dot { width: 5px; height: 5px; background: #ff2d6b; border-radius: 50%; position: absolute; top: 5px; right: 5px; }
+
+  .reward-bar-wrap { width: 100%; background: rgba(255,255,255,0.08); border-radius: 20px; height: 5px; margin-bottom: 4px; }
+  .reward-bar-fill { background: linear-gradient(90deg, #ff2d6b, #f59e0b); border-radius: 20px; height: 100%; }
+
+  .tier-row { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 4px 6px; border-radius: 6px; margin-bottom: 3px; }
+  .tier-active { background: rgba(255,45,107,0.15); }
+  .tier-inactive { background: rgba(255,255,255,0.04); }
+
+  .share-card {
+    width: 100%; background: rgba(255,255,255,0.12);
+    border-radius: 10px; padding: 8px; text-align: center;
+  }
+  .share-big { font-size: 22px; font-weight: 900; color: white; line-height: 1; }
+  .share-sub { font-size: 7px; color: rgba(255,255,255,0.7); margin-bottom: 6px; }
+  .share-badge {
+    background: rgba(255,255,255,0.2); border-radius: 6px;
+    padding: 4px 8px; font-size: 8px; font-weight: 700; color: white;
+    display: inline-block; margin-bottom: 6px;
+  }
+  .hashtag { font-size: 7px; color: rgba(255,255,255,0.5); }
+
+  .eye-graphic { font-size: 32px; margin-bottom: 4px; }
+  .timer-big { font-size: 38px; font-weight: 900; color: white; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -1px; }
+
+  .blink-x { font-size: 36px; font-weight: 900; color: #ef4444; line-height: 1; }
+
+  .cash-badge {
+    background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 8px; padding: 8px; width: 100%; text-align: center; margin-bottom: 6px;
+  }
+
+  .brief-rule { display: flex; gap: 5px; align-items: flex-start; margin-bottom: 5px; }
+  .brief-dot { width: 4px; height: 4px; background: #ff2d6b; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+
+  .countdown-num { font-size: 64px; font-weight: 900; color: white; line-height: 1; }
+  .countdown-sub { font-size: 8px; font-weight: 700; letter-spacing: 0.15em; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-top: 4px; }
+
+  .record-note {
+    background: rgba(255,255,255,0.05); border-radius: 6px; padding: 5px 7px;
+    width: 100%; text-align: center; margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-title">Don't Blink — Full User Flow</div>
+<div class="page-sub">7 screens · order confirmation → reward → share</div>
+
+<!-- ROW 1 -->
+<div class="row-label">Funnel entry</div>
+<div class="flow-row">
+
+  <!-- S1: Order Confirm -->
+  <div class="flow-step">
+    <div class="step-wrap">
+      <div class="step-num">Screen 1</div>
+      <div class="phone sc-confirm">
+        <div class="notch"></div>
+        <div class="tag tag-green">✓ Order Confirmed</div>
+        <div class="sz28 mb4">🍦</div>
+        <div class="sz10 bold wht center mb2">Your scoop is racing over.</div>
+        <div class="sz7 dim center mb8 lh14">ETA · 8 min · Vasai West dark store</div>
+        <div class="divider"></div>
+        <div style="background:rgba(255,45,107,0.1);border:1px solid rgba(255,45,107,0.3);border-radius:10px;padding:8px;width:100%;margin-bottom:7px;">
+          <div class="tag tag-pink" style="margin-bottom:4px;">While you wait</div>
+          <div class="sz10 bold wht center mb2">Don't Blink Challenge</div>
+          <div class="sz7 dim center lh14 mb6">Stare the longest. Win up to ₹150 Zepto Cash.</div>
+          <div class="btn btn-pink mb4">I ACCEPT THE DARE →</div>
+          <div class="sz7 dim center">Maybe next time</div>
+        </div>
+      </div>
+      <div class="step-label">Order confirmation<br>+ opt-in banner</div>
+    </div>
+    <div class="arrow">›</div>
+  </div>
+
+  <!-- S2: Brief / Rules -->
+  <div class="flow-step">
+    <div class="step-wrap">
+      <div class="step-num">Screen 2</div>
+      <div class="phone sc-brief">
+        <div class="notch"></div>
+        <div class="tag tag-pink" style="margin-bottom:6px;">THE DARE</div>
+        <div class="sz18 bold wht center mb2">Don't<br>Blink.</div>
+        <div class="divider"></div>
+        <div class="brief-rule"><div class="brief-dot"></div><div class="sz7 dim lh14">Front camera watches your eyes</div></div>
+        <div class="brief-rule"><div class="brief-dot"></div><div class="sz7 dim lh14">Every second without blinking = more Zepto Cash</div></div>
+        <div class="brief-rule"><div class="brief-dot"></div><div class="sz7 dim lh14">Blink once — game over</div></div>
+        <div class="divider"></div>
+        <div class="record-note">
+          <div class="sz7 dim">World record</div>
+          <div class="sz9 bold gold">1 hr 5 min 11 sec</div>
+          <div class="sz7 dim">Your record: 0 sec</div>
+        </div>
+        <div class="tier-row tier-inactive"><span class="sz7 wht">10 sec</span><span class="sz7 gold">₹10</span></div>
+        <div class="tier-row tier-inactive"><span class="sz7 wht">30 sec</span><span class="sz7 gold">₹60</span></div>
+        <div class="tier-row tier-inactive"><span class="sz7 wht">60+ sec</span><span class="sz7 gold">₹150 🔥</span></div>
+        <div style="margin-top:8px;" class="btn btn-pink">I'M READY</div>
+      </div>
+      <div class="step-label">Rules + reward<br>tiers revealed</div>
+    </div>
+    <div class="arrow">›</div>
+  </div>
+
+  <!-- S3: Countdown -->
+  <div class="flow-step">
+    <div class="step-wrap">
+      <div class="step-num">Screen 3</div>
+      <div class="phone sc-count" style="justify-content:center;">
+        <div class="notch"></div>
+        <div class="sz9 bold center mb12" style="color:rgba(255,255,255,0.3);letter-spacing:0.15em;text-transform:uppercase;">Eyes open in</div>
+        <div class="countdown-num center">3</div>
+        <div class="countdown-sub center">Don't look away</div>
+      </div>
+      <div class="step-label">3-second countdown<br>builds tension</div>
+    </div>
+    <div class="arrow">›</div>
+  </div>
+
+  <!-- S4: THE STARE -->
+  <div class="flow-step">
+    <div class="step-wrap">
+      <div class="step-num">Screen 4</div>
+      <div class="phone sc-stare">
+        <div class="notch"></div>
+        <!-- Camera view -->
+        <div class="camera-view">
+          <div class="camera-face">🧑</div>
+          <div class="camera-dot"></div>
+        </div>
+        <div class="sz7 dim center mb6">Front camera · blink detection active</div>
+        <!-- Ice cream staring back -->
+        <div class="sz28 center mb2">🍦</div>
+        <div class="sz7 dim center mb8 lh14">Staring at you.<br>Don't you dare.</div>
+        <!-- Timer -->
+        <div class="timer-big center mb2">0:23</div>
+        <div class="sz7 dim center mb6">seconds held</div>
+        <!-- Progress bar -->
+        <div class="reward-bar-wrap">
+          <div class="reward-bar-fill" style="width:38%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;width:100%;margin-top:3px;margin-bottom:6px;">
+          <div class="sz7 gold bold">₹30 won</div>
+          <div class="sz7 dim">₹60 at 30s</div>
+        </div>
+        <div class="tag tag-pink" style="width:100%;text-align:center;">● LIVE</div>
+      </div>
+      <div class="step-label">Stare screen —<br>live camera + timer</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 2 -->
+<div class="row-label" style="margin-top:8px;">Resolution</div>
+<div class="flow-row">
+
+  <!-- S5: Blink Detected -->
+  <div class="flow-step">
+    <div class="step-wrap">
+      <div class="step-num">Screen 5</div>
+      <div class="phone sc-blink" style="justify-content:center;">
+        <div class="notch"></div>
+        <div class="blink-x center mb4">😳</div>
+        <div class="sz18 bold center mb2" style="color:#f87171;">YOU<br>BLINKED.</div>
+        <div class="sz8 dim center mb8 lh14">0 : 23 seconds</div>
+        <div class="divider"></div>
+        <div class="cash-badge" style="background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.3);">
+          <div class="sz7" style="color:#fca5a5;">You earned</div>
+          <div class="sz13 bold" style="color:#f87171;">₹30 Zepto Cash</div>
+          <div class="sz7" style="color:#fca5a5;">30s tier unlocked</div>
+        </div>
+        <div class="sz7 dim center lh14 mb8">So close to ₹60.<br>Try again tomorrow.</div>
+        <div class="btn btn-pink mb4">SEE MY REWARD</div>
+        <div class="sz7 dim center">Try again tomorrow</div>
+      </div>
+      <div class="step-label">Blink detected —<br>score frozen</div>
+    </div>
+    <div class="arrow">›</div>
+  </div>
+
+  <!-- S6: Reward Reveal -->
+  <div class="flow-step">
+    <div class="step-wrap">
+      <div class="step-num">Screen 6</div>
+      <div class="phone sc-reward">
+        <div class="notch"></div>
+        <div class="tag tag-green">₹30 Added to Wallet</div>
+        <div class="sz28 center mb2">🎉</div>
+        <div class="sz10 bold wht center mb8">Not bad, Aanya.</div>
+        <div class="cash-badge">
+          <div class="sz7 grn">Zepto Cash earned</div>
+          <div style="font-size:26px;font-weight:900;color:#4ade80;line-height:1.1;">₹30</div>
+          <div class="sz7 grn">Expires in 7 days</div>
+        </div>
+        <div class="divider"></div>
+        <div class="sz7 dim center lh14 mb8">Use it on any order above ₹149. You were 7 seconds away from ₹60.</div>
+        <div class="tier-row tier-inactive mb2"><span class="sz7 wht">10 sec ✓</span><span class="sz7 grn">₹10</span></div>
+        <div class="tier-row tier-active mb2"><span class="sz7 wht">23 sec ✓</span><span class="sz7 gold">₹30</span></div>
+        <div class="tier-row tier-inactive"><span class="sz7 dim">30 sec</span><span class="sz7 dim">₹60</span></div>
+        <div style="margin-top:8px;" class="btn btn-green mb4">USE MY CASH NOW</div>
+        <div class="btn btn-outline">SHARE MY SCORE</div>
+      </div>
+      <div class="step-label">Reward reveal +<br>wallet credit</div>
+    </div>
+    <div class="arrow">›</div>
+  </div>
+
+  <!-- S7: Share Card -->
+  <div class="flow-step">
+    <div class="step-wrap">
+      <div class="step-num">Screen 7</div>
+      <div class="phone sc-share">
+        <div class="notch"></div>
+        <div class="sz8 bold center mb6" style="color:rgba(255,255,255,0.6);letter-spacing:0.1em;text-transform:uppercase;">zepto</div>
+        <div class="share-card">
+          <div class="sz9 bold wht center mb4">Don't Blink Challenge</div>
+          <div class="share-big mb2">0:23</div>
+          <div class="share-sub">seconds without blinking</div>
+          <div class="share-badge">WON ₹30 ZEPTO CASH</div>
+          <div class="hashtag">#DontBlink #Zepto</div>
+        </div>
+        <div class="divider"></div>
+        <div class="sz7 dim center lh14 mb8">World record is 1hr 5min.<br>Think your friends can beat 23 sec?</div>
+        <div class="btn btn-white mb4">SHARE TO INSTAGRAM</div>
+        <div class="btn btn-outline">COPY SCORE CARD</div>
+      </div>
+      <div class="step-label">Share card —<br>built for Stories</div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:24px;padding:16px 20px;background:white;border-radius:12px;border:1px solid #e5e7eb;max-width:860px;">
+  <div style="font-size:12px;font-weight:800;color:#1a1a1a;margin-bottom:10px;letter-spacing:0.05em;text-transform:uppercase;">Key design decisions baked in</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+    <div>
+      <div style="font-size:10px;font-weight:700;color:#7c3aed;margin-bottom:4px;">RETENTION HOOK</div>
+      <div style="font-size:12px;color:#555;line-height:1.5;">Zepto Cash expires in 7 days — creates urgency to return. Reward reveal shows "X seconds to next tier" — creates tomorrow's goal.</div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;color:#ff2d6b;margin-bottom:4px;">VIRAL SURFACE</div>
+      <div style="font-size:12px;color:#555;line-height:1.5;">Share card references world record — makes even a 23-second score feel part of something bigger. Hashtag #DontBlink seeds discovery.</div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;color:#16a34a;margin-bottom:4px;">SLA COMPLIANCE</div>
+      <div style="font-size:12px;color:#555;line-height:1.5;">Entire flow runs client-side in the app. Blink detection: MediaPipe Face Mesh via on-device ML. Zero ops change. No new infra.</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

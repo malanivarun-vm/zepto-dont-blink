@@ -1,0 +1,231 @@
+<style>
+  .approaches { display: flex; flex-direction: column; gap: 24px; max-width: 860px; margin: 0 auto; }
+  .approach-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .approach-card.selected {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+  }
+  .card-header {
+    padding: 20px 24px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .approach-letter {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; flex-shrink: 0;
+    color: white;
+  }
+  .a-color { background: #ff2d6b; }
+  .b-color { background: #7c3aed; }
+  .c-color { background: #f59e0b; color: #1a1a1a; }
+  .approach-meta { flex: 1; }
+  .approach-name { font-size: 20px; font-weight: 800; margin: 0 0 4px; color: #1a1a1a; }
+  .approach-tagline { font-size: 14px; color: #666; margin: 0 0 8px; font-style: italic; }
+  .approach-desc { font-size: 14px; color: #333; line-height: 1.6; margin: 0; }
+  .card-body { padding: 0 24px 20px; display: flex; gap: 20px; }
+  .mockup-preview {
+    width: 160px; flex-shrink: 0;
+    background: #1a1a1a;
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 12px;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 220px;
+  }
+  .phone-screen { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; }
+  .card-tradeoffs { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .tradeoff-block { background: #f9f9f9; border-radius: 10px; padding: 12px 14px; }
+  .tradeoff-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .tradeoff-label.pro { color: #16a34a; }
+  .tradeoff-label.con { color: #dc2626; }
+  .tradeoff-label.rec { color: #7c3aed; }
+  .tradeoff-text { font-size: 13px; color: #333; line-height: 1.5; margin: 0; }
+
+  /* Mockup A — Countdown Theatre */
+  .mockup-a { background: linear-gradient(160deg, #1a0a2e 0%, #2d1052 100%); }
+  .mka-brand { color: #a855f7; font-size: 9px; font-weight: 800; letter-spacing: 0.15em; margin-bottom: 10px; }
+  .mka-status { color: #ff2d6b; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .mka-timer { color: white; font-size: 36px; font-weight: 900; line-height: 1; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+  .mka-label { color: rgba(255,255,255,0.5); font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+  .mka-visual { font-size: 28px; margin-bottom: 10px; }
+  .mka-share { background: #ff2d6b; color: white; font-size: 9px; font-weight: 700; padding: 7px 14px; border-radius: 20px; width: 100%; text-align: center; }
+
+  /* Mockup B — Scoop Report Card */
+  .mockup-b { background: #f7f0ff; }
+  .mkb-logo { color: #7c3aed; font-size: 9px; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .mkb-title { color: #1a1a1a; font-size: 11px; font-weight: 800; margin-bottom: 2px; }
+  .mkb-sub { color: #888; font-size: 8px; margin-bottom: 10px; }
+  .mkb-stat { background: white; border-radius: 8px; padding: 6px 8px; margin-bottom: 6px; width: 100%; text-align: center; }
+  .mkb-stat-num { color: #7c3aed; font-size: 16px; font-weight: 900; line-height: 1; }
+  .mkb-stat-label { color: #999; font-size: 7px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .mkb-quote { color: #ff2d6b; font-size: 8px; font-style: italic; font-weight: 600; text-align: center; margin-bottom: 10px; line-height: 1.4; }
+  .mkb-share { background: #7c3aed; color: white; font-size: 8px; font-weight: 700; padding: 7px 0; border-radius: 20px; width: 100%; text-align: center; }
+
+  /* Mockup C — Night Drop */
+  .mockup-c { background: #0f0f0f; }
+  .mkc-badge { background: #f59e0b; color: #000; font-size: 7px; font-weight: 900; letter-spacing: 0.1em; padding: 3px 8px; border-radius: 20px; margin-bottom: 10px; text-transform: uppercase; }
+  .mkc-title { color: white; font-size: 14px; font-weight: 900; text-align: center; line-height: 1.2; margin-bottom: 4px; }
+  .mkc-window { color: #f59e0b; font-size: 9px; font-weight: 700; text-align: center; margin-bottom: 12px; }
+  .mkc-item { background: #1f1f1f; border-radius: 8px; padding: 8px; margin-bottom: 6px; width: 100%; text-align: center; }
+  .mkc-item-name { color: white; font-size: 9px; font-weight: 700; }
+  .mkc-item-price { color: #f59e0b; font-size: 11px; font-weight: 900; }
+  .mkc-cta { background: #f59e0b; color: #000; font-size: 9px; font-weight: 900; padding: 8px 0; border-radius: 20px; width: 100%; text-align: center; margin-top: 4px; }
+
+  .rec-pill {
+    display: inline-block;
+    background: #7c3aed;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+</style>
+
+<h2>Which mechanic is the Zepto counter-move?</h2>
+<p class="subtitle">Three fundamentally different answers to "what happens in the 10-minute window?"</p>
+
+<div class="approaches">
+
+  <!-- APPROACH A -->
+  <div class="approach-card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-header">
+      <div class="approach-letter a-color">A</div>
+      <div class="approach-meta">
+        <div class="approach-name">Freeze Frame — The Wait as Cinema <span class="rec-pill">Recommended</span></div>
+        <div class="approach-tagline">"Blinkit owns the scream. We own the ten minutes."</div>
+        <div class="approach-desc">After ordering, the tracking screen becomes a full cinematic countdown — dramatic Zepto purple, live visual of your scoop racing through the city, temperature ticker proving it's still frozen. The final "YOUR ICE CREAM IS HERE" moment is screenshot-bait by design. The share artifact IS the wait screen. No separate mechanic needed.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mockup-preview mockup-a">
+        <div class="phone-screen">
+          <div class="mka-brand">ZEPTO</div>
+          <div class="mka-status">🔴 LIVE — YOUR SCOOP IS RACING</div>
+          <div class="mka-timer">8:42</div>
+          <div class="mka-label">minutes until doorbell</div>
+          <div class="mka-visual">🍦</div>
+          <div class="mka-share">📸 SCREENSHOT THIS</div>
+        </div>
+      </div>
+      <div class="card-tradeoffs">
+        <div class="tradeoff-block">
+          <div class="tradeoff-label pro">Why it wins</div>
+          <div class="tradeoff-text">Directly occupies the 10-minute canvas. Every order becomes a share moment. Blinkit literally cannot copy this without admitting their window is longer. Screenshot of the countdown = instantly Zepto.</div>
+        </div>
+        <div class="tradeoff-block">
+          <div class="tradeoff-label con">Risk</div>
+          <div class="tradeoff-text">Needs the UI to be extraordinary — a mediocre countdown doesn't go viral. The mechanic is UI-dependent. Requires tight animation and brand execution.</div>
+        </div>
+        <div class="tradeoff-block">
+          <div class="tradeoff-label rec">Reusability</div>
+          <div class="tradeoff-text">"Your biryani is racing" → works for any time-sensitive impulse category.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPROACH B -->
+  <div class="approach-card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-header">
+      <div class="approach-letter b-color">B</div>
+      <div class="approach-meta">
+        <div class="approach-name">The Scoop Report — Speed Made Shareable</div>
+        <div class="approach-tagline">"Your delivery, receipted."</div>
+        <div class="approach-desc">After delivery, Zepto generates a branded "Scoop Report" card: exact delivery time, temperature reading, flavor, and a witty Zepto-voice line. It's Spotify Wrapped for your ice cream run — a beautiful, portrait-format card built for Instagram stories. The share moment is post-delivery, not during the wait.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mockup-preview" style="background: #f7f0ff;">
+        <div class="phone-screen">
+          <div class="mkb-logo">ZEPTO</div>
+          <div class="mkb-title">Your Scoop Report</div>
+          <div class="mkb-sub">Saturday, 11:23 PM</div>
+          <div class="mkb-stat">
+            <div class="mkb-stat-num">7:54</div>
+            <div class="mkb-stat-label">delivery time</div>
+          </div>
+          <div class="mkb-stat">
+            <div class="mkb-stat-num">-18°C</div>
+            <div class="mkb-stat-label">still frozen</div>
+          </div>
+          <div class="mkb-quote">"Arrived before your spoon could get lonely."</div>
+          <div class="mkb-share">SHARE YOUR REPORT</div>
+        </div>
+      </div>
+      <div class="card-tradeoffs">
+        <div class="tradeoff-block">
+          <div class="tradeoff-label pro">Why it works</div>
+          <div class="tradeoff-text">Lower execution risk — the share artifact is a generated card, not a live experience. Temperature data makes Zepto's speed claim concrete and tangible. Cards go viral on their own.</div>
+        </div>
+        <div class="tradeoff-block">
+          <div class="tradeoff-label con">Risk</div>
+          <div class="tradeoff-text">Requires temp sensors or integration — ops dependency. Post-delivery moment misses the excitement window. Less "theatre" than the brief asks for. Competitor-copyable.</div>
+        </div>
+        <div class="tradeoff-block">
+          <div class="tradeoff-label rec">Reusability</div>
+          <div class="tradeoff-text">Works for any category with a measurable delivery promise.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPROACH C -->
+  <div class="approach-card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-header">
+      <div class="approach-letter c-color">C</div>
+      <div class="approach-meta">
+        <div class="approach-name">Night Drop — FOMO at 10PM</div>
+        <div class="approach-tagline">"Catch the drop. Or miss it."</div>
+        <div class="approach-desc">Between 9–11PM, a "Night Drop" appears on the home screen — curated ice cream combos, available for a 10-minute flash window, then gone. Users race to claim. The mechanic is FOMO × speed. Share artifact is "I caught the drop" screenshots. Streetwear culture applied to ice cream.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mockup-preview" style="background: #0f0f0f;">
+        <div class="phone-screen">
+          <div class="mkc-badge">NIGHT DROP · LIVE NOW</div>
+          <div class="mkc-title">Tonight's Scoops</div>
+          <div class="mkc-window">Gone in 10:00 ⏳</div>
+          <div class="mkc-item">
+            <div class="mkc-item-name">Amul Butter Pecan</div>
+            <div class="mkc-item-price">₹89</div>
+          </div>
+          <div class="mkc-item">
+            <div class="mkc-item-name">Kwality Walls Trio</div>
+            <div class="mkc-item-price">₹129</div>
+          </div>
+          <div class="mkc-cta">CLAIM THE DROP →</div>
+        </div>
+      </div>
+      <div class="card-tradeoffs">
+        <div class="tradeoff-block">
+          <div class="tradeoff-label pro">Why it's interesting</div>
+          <div class="tradeoff-text">Creates demand rather than responding to it. Generates habitual behaviour (checking the app at 10PM). FOMO is a proven virality driver.</div>
+        </div>
+        <div class="tradeoff-block">
+          <div class="tradeoff-label con">Risk</div>
+          <div class="tradeoff-text">Doesn't directly counter Blinkit's moment — it's a different battle. Needs inventory/discount decisions (brief says no ops changes). Could feel like a sale, not a brand moment.</div>
+        </div>
+        <div class="tradeoff-block">
+          <div class="tradeoff-label rec">Reusability</div>
+          <div class="tradeoff-text">Works for any impulse category with natural evening demand.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p style="margin-top: 20px; font-size: 13px; color: #888;">Click an approach card to select it, then tell me in the terminal. I lean strongly toward A — it's the only mechanic that makes the 10-minute window itself the product.</p>

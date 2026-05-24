@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scoop Size Test</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #111;
+    padding: 32px 24px 48px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  h2 { color: white; font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+  .sub { color: #666; font-size: 12px; margin-bottom: 36px; }
+
+  .phones { display: flex; gap: 32px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+
+  .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer; }
+  .size-label { color: #888; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* Phone shell */
+  .phone {
+    width: 220px;
+    height: 440px;
+    background: #0f0517;
+    border-radius: 36px;
+    border: 6px solid #1e1e2e;
+    box-shadow:
+      0 0 0 1px #2a2a3a,
+      0 20px 60px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 18px 14px 16px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .phone-wrap.selected .phone {
+    border-color: #ff2d6b;
+    box-shadow: 0 0 0 1px #ff2d6b, 0 20px 60px rgba(0,0,0,0.6), 0 0 30px rgba(255,45,107,0.2);
+  }
+  .phone-wrap.selected .size-label { color: #ff2d6b; }
+
+  /* Notch */
+  .notch {
+    width: 60px; height: 8px;
+    background: #1e1e2e;
+    border-radius: 0 0 10px 10px;
+    margin-bottom: 12px; flex-shrink: 0;
+  }
+
+  /* Camera strip */
+  .cam-strip {
+    width: 100%; height: 56px;
+    background: #0a0a0a;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; flex-shrink: 0;
+    border: 1px solid #1a1a2e;
+  }
+  .cam-face { font-size: 24px; }
+  .cam-live {
+    position: absolute; top: 5px; right: 7px;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .cam-dot { width: 5px; height: 5px; background: #ff2d6b; border-radius: 50%; }
+  .cam-text { font-size: 7px; color: #ff2d6b; font-weight: 700; letter-spacing: 0.08em; }
+
+  /* Blink detection bar */
+  .detect-label {
+    font-size: 7px; color: rgba(255,255,255,0.3); letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 10px; flex-shrink: 0;
+  }
+
+  /* THE SCOOP */
+  .scoop-zone {
+    flex: 1; width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .scoop {
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .scoop-emoji {
+    line-height: 1;
+    user-select: none;
+    filter: drop-shadow(0 4px 16px rgba(168,85,247,0.4));
+  }
+
+  /* Gaze zone ring — shows the tolerance area */
+  .gaze-ring {
+    position: absolute;
+    border: 1.5px dashed rgba(255,45,107,0.25);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* Timer */
+  .timer-row {
+    width: 100%; display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 6px; flex-shrink: 0;
+  }
+  .timer { font-size: 28px; font-weight: 900; color: white; line-height: 1; font-variant-numeric: tabular-nums; }
+  .timer-sub { font-size: 7px; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+  /* Progress bar */
+  .prog-wrap {
+    width: 100%; height: 4px; background: rgba(255,255,255,0.06);
+    border-radius: 20px; margin-bottom: 6px; flex-shrink: 0;
+  }
+  .prog-fill {
+    height: 100%; border-radius: 20px;
+    background: linear-gradient(90deg, #7c3aed, #ff2d6b);
+  }
+
+  /* Cash display */
+  .cash-row {
+    width: 100%; display: flex; justify-content: space-between; align-items: center;
+    flex-shrink: 0;
+  }
+  .cash-now { font-size: 9px; font-weight: 800; color: #fbbf24; }
+  .cash-next { font-size: 8px; color: rgba(255,255,255,0.3); }
+
+  /* Size indicator */
+  .size-badge {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 11px; font-weight: 700; color: #888;
+    margin-top: 4px;
+  }
+  .phone-wrap.selected .size-badge { background: rgba(255,45,107,0.1); border-color: rgba(255,45,107,0.3); color: #ff2d6b; }
+
+  .pick-note { color: #555; font-size: 12px; margin-top: 32px; text-align: center; }
+</style>
+</head>
+<body>
+
+<h2>Scoop Size on Stare Screen</h2>
+<p class="sub">Dashed ring = gaze detection zone. Click the size that feels right.</p>
+
+<div class="phones">
+
+  <!-- 20% — small -->
+  <div class="phone-wrap" data-choice="small" onclick="toggleSelect(this)">
+    <div class="size-label">Too small?</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="cam-strip">
+        <div class="cam-face">🧑</div>
+        <div class="cam-live"><div class="cam-dot"></div><div class="cam-text">LIVE</div></div>
+      </div>
+      <div class="detect-label">Blink detection · active</div>
+      <div class="scoop-zone">
+        <div class="scoop">
+          <!-- 20% of 220px phone = 44px -->
+          <div class="gaze-ring" style="width:70px;height:70px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+          <div class="scoop-emoji" style="font-size:44px;">🍦</div>
+        </div>
+      </div>
+      <div class="timer-row">
+        <div class="timer">0:23</div>
+        <div class="timer-sub">seconds held</div>
+      </div>
+      <div class="prog-wrap"><div class="prog-fill" style="width:38%;"></div></div>
+      <div class="cash-row">
+        <div class="cash-now">₹30 won</div>
+        <div class="cash-next">₹60 at 30s →</div>
+      </div>
+    </div>
+    <div class="size-badge">~20% of screen</div>
+  </div>
+
+  <!-- 27% — recommended -->
+  <div class="phone-wrap" data-choice="medium" onclick="toggleSelect(this)">
+    <div class="size-label">Recommended</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="cam-strip">
+        <div class="cam-face">🧑</div>
+        <div class="cam-live"><div class="cam-dot"></div><div class="cam-text">LIVE</div></div>
+      </div>
+      <div class="detect-label">Blink detection · active</div>
+      <div class="scoop-zone">
+        <div class="scoop">
+          <!-- 27% of 220px = 59px -->
+          <div class="gaze-ring" style="width:90px;height:90px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+          <div class="scoop-emoji" style="font-size:59px;">🍦</div>
+        </div>
+      </div>
+      <div class="timer-row">
+        <div class="timer">0:23</div>
+        <div class="timer-sub">seconds held</div>
+      </div>
+      <div class="prog-wrap"><div class="prog-fill" style="width:38%;"></div></div>
+      <div class="cash-row">
+        <div class="cash-now">₹30 won</div>
+        <div class="cash-next">₹60 at 30s →</div>
+      </div>
+    </div>
+    <div class="size-badge">~27% of screen</div>
+  </div>
+
+  <!-- 35% — large -->
+  <div class="phone-wrap" data-choice="large" onclick="toggleSelect(this)">
+    <div class="size-label">Too large?</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="cam-strip">
+        <div class="cam-face">🧑</div>
+        <div class="cam-live"><div class="cam-dot"></div><div class="cam-text">LIVE</div></div>
+      </div>
+      <div class="detect-label">Blink detection · active</div>
+      <div class="scoop-zone">
+        <div class="scoop">
+          <!-- 35% of 220px = 77px -->
+          <div class="gaze-ring" style="width:112px;height:112px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+          <div class="scoop-emoji" style="font-size:77px;">🍦</div>
+        </div>
+      </div>
+      <div class="timer-row">
+        <div class="timer">0:23</div>
+        <div class="timer-sub">seconds held</div>
+      </div>
+      <div class="prog-wrap"><div class="prog-fill" style="width:38%;"></div></div>
+      <div class="cash-row">
+        <div class="cash-now">₹30 won</div>
+        <div class="cash-next">₹60 at 30s →</div>
+      </div>
+    </div>
+    <div class="size-badge">~35% of screen</div>
+  </div>
+
+</div>
+
+<p class="pick-note">Dashed ring = the gaze zone the camera needs to detect. Larger zone = more forgiving tracking. Smaller = more precision required.</p>
+
+<script>
+function toggleSelect(el) {
+  document.querySelectorAll('.phone-wrap').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<style>
+  .split-compare { display: flex; gap: 24px; max-width: 900px; margin: 0 auto; }
+  .compare-side {
+    flex: 1;
+    border: 2px solid #e0e0e0;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .compare-side.selected {
+    border-color: #ff2d6b;
+    box-shadow: 0 0 0 3px rgba(255,45,107,0.15);
+  }
+  .compare-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .compare-label {
+    font-size: 11px; font-weight: 800; letter-spacing: 0.1em;
+    text-transform: uppercase; color: #888; margin-bottom: 4px;
+  }
+  .compare-title { font-size: 20px; font-weight: 800; color: #1a1a1a; margin: 0 0 6px; }
+  .compare-tagline { font-size: 13px; color: #555; margin: 0; font-style: italic; }
+
+  .phone-wrapper {
+    display: flex; justify-content: center; padding: 20px 20px 12px;
+  }
+  .phone {
+    width: 160px;
+    background: #1a0a2e;
+    border-radius: 24px;
+    padding: 14px 12px;
+    min-height: 280px;
+    display: flex; flex-direction: column; align-items: center;
+    position: relative;
+  }
+  .phone-notch {
+    width: 40px; height: 6px; background: #333; border-radius: 3px;
+    margin-bottom: 12px;
+  }
+
+  /* Mandatory phone */
+  .m-order-success { color: #a855f7; font-size: 8px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .m-big-emoji { font-size: 32px; margin-bottom: 6px; }
+  .m-title { color: white; font-size: 11px; font-weight: 900; text-align: center; margin-bottom: 4px; }
+  .m-subtitle { color: rgba(255,255,255,0.5); font-size: 7.5px; text-align: center; margin-bottom: 14px; line-height: 1.4; }
+  .m-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.1); margin-bottom: 14px; }
+  .m-challenge-box {
+    background: linear-gradient(135deg, #ff2d6b, #c0005e);
+    border-radius: 12px; padding: 12px; width: 100%; text-align: center; margin-bottom: 8px;
+  }
+  .m-challenge-label { color: rgba(255,255,255,0.8); font-size: 7px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .m-challenge-title { color: white; font-size: 13px; font-weight: 900; margin-bottom: 4px; }
+  .m-challenge-sub { color: rgba(255,255,255,0.85); font-size: 7.5px; line-height: 1.4; }
+  .m-auto { color: rgba(255,255,255,0.35); font-size: 7px; text-align: center; margin-top: 6px; }
+
+  /* Optional phone */
+  .o-order-success { color: #a855f7; font-size: 8px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .o-big-emoji { font-size: 32px; margin-bottom: 6px; }
+  .o-title { color: white; font-size: 11px; font-weight: 900; text-align: center; margin-bottom: 4px; }
+  .o-time { color: rgba(255,255,255,0.45); font-size: 7.5px; text-align: center; margin-bottom: 14px; }
+  .o-challenge-banner {
+    background: rgba(255,45,107,0.12); border: 1px solid rgba(255,45,107,0.4);
+    border-radius: 10px; padding: 10px; width: 100%; text-align: center; margin-bottom: 8px;
+  }
+  .o-banner-label { color: #ff2d6b; font-size: 7px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 3px; }
+  .o-banner-title { color: white; font-size: 11px; font-weight: 800; margin-bottom: 3px; }
+  .o-banner-sub { color: rgba(255,255,255,0.6); font-size: 7px; line-height: 1.4; }
+  .o-accept { background: #ff2d6b; color: white; font-size: 8px; font-weight: 700; padding: 7px 0; border-radius: 20px; width: 100%; text-align: center; margin-bottom: 5px; }
+  .o-skip { color: rgba(255,255,255,0.3); font-size: 7px; text-align: center; }
+
+  .compare-body { padding: 0 20px 20px; }
+  .point { display: flex; gap: 8px; margin-bottom: 10px; align-items: flex-start; }
+  .point-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .point-text { font-size: 13px; color: #333; line-height: 1.5; }
+  .verdict {
+    margin-top: 14px; padding: 12px 14px;
+    border-radius: 10px; font-size: 12px; line-height: 1.5; font-weight: 600;
+  }
+  .verdict-m { background: #fff0f4; color: #c0005e; border: 1px solid #ffc8d8; }
+  .verdict-o { background: #f3f0ff; color: #5b21b6; border: 1px solid #c4b5fd; }
+</style>
+
+<h2>Don't Blink Challenge — When does it appear?</h2>
+<p class="subtitle">This changes the participation rate, the share volume, and the pressure on UX execution</p>
+
+<div class="split-compare">
+
+  <!-- MANDATORY -->
+  <div class="compare-side" data-choice="mandatory" onclick="toggleSelect(this)">
+    <div class="compare-header">
+      <div class="compare-label">Option A</div>
+      <div class="compare-title">Auto-starts after order</div>
+      <div class="compare-tagline">"Every ice cream order becomes a challenge"</div>
+    </div>
+    <div class="phone-wrapper">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="m-order-success">✓ ORDER CONFIRMED</div>
+        <div class="m-big-emoji">🍦</div>
+        <div class="m-title">Your scoop is racing over.</div>
+        <div class="m-subtitle">While you wait — we dare you.</div>
+        <div class="m-divider"></div>
+        <div class="m-challenge-box">
+          <div class="m-challenge-label">Starting in 3 seconds…</div>
+          <div class="m-challenge-title">DON'T BLINK</div>
+          <div class="m-challenge-sub">Stare down the screen. The longer you hold, the bigger your next discount.</div>
+        </div>
+        <div class="m-auto">Skip anytime · No penalty</div>
+      </div>
+    </div>
+    <div class="compare-body">
+      <div class="point"><div class="point-icon">📈</div><div class="point-text">Maximum share volume — every order is a potential post</div></div>
+      <div class="point"><div class="point-icon">🎭</div><div class="point-text">Zepto association: "the app that dares you" becomes the brand personality</div></div>
+      <div class="point"><div class="point-icon">⚠️</div><div class="point-text">Risk: users who just want to track delivery feel ambushed — must have a clean skip</div></div>
+      <div class="verdict verdict-m">Best for: viral scale and brand identity. Works if "skip" is frictionless and the challenge UI is immediately delightful.</div>
+    </div>
+  </div>
+
+  <!-- OPT-IN -->
+  <div class="compare-side" data-choice="optin" onclick="toggleSelect(this)">
+    <div class="compare-header">
+      <div class="compare-label">Option B</div>
+      <div class="compare-title">Opt-in banner on order screen</div>
+      <div class="compare-tagline">"Offered, not imposed"</div>
+    </div>
+    <div class="phone-wrapper">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="o-order-success">✓ ORDER CONFIRMED</div>
+        <div class="o-big-emoji">🍦</div>
+        <div class="o-title">Your scoop is on the way.</div>
+        <div class="o-time">ETA · 8 min</div>
+        <div class="o-challenge-banner">
+          <div class="o-banner-label">While you wait →</div>
+          <div class="o-banner-title">Don't Blink Challenge</div>
+          <div class="o-banner-sub">Stare the longest. Win up to 15% off your next order.</div>
+        </div>
+        <div class="o-accept">I ACCEPT THE DARE</div>
+        <div class="o-skip">Maybe next time</div>
+      </div>
+    </div>
+    <div class="compare-body">
+      <div class="point"><div class="point-icon">✅</div><div class="point-text">Zero UX friction — users self-select, higher satisfaction scores</div></div>
+      <div class="point"><div class="point-icon">🎯</div><div class="point-text">Participants are already engaged — higher share rate among those who play</div></div>
+      <div class="point"><div class="point-icon">⚠️</div><div class="point-text">Lower total participation — most people will tap through; smaller viral surface area</div></div>
+      <div class="verdict verdict-o">Best for: safer launch, better NPS. Lose some virality but avoid the "annoying popup" backlash. Good v1, could auto-start post-validation.</div>
+    </div>
+  </div>
+
+</div>
+
+<p style="margin-top: 20px; font-size: 13px; color: #888;">My lean: <strong>A (auto-start)</strong> — with a no-friction skip. The challenge needs to feel like it's waiting for you, not something you opted into. That's what gets the recording. Click your pick and tell me in the terminal.</p>

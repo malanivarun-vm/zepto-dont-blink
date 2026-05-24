@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Don't Blink — System Architecture</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f0f13;
+    color: #e0e0e0;
+    padding: 32px 28px 56px;
+    min-height: 100vh;
+  }
+
+  .page-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+  .page-sub { font-size: 12px; color: #666; margin-bottom: 32px; }
+
+  /* Layer wrapper */
+  .arch { display: flex; flex-direction: column; gap: 0; max-width: 960px; }
+
+  .layer {
+    display: flex; align-items: stretch; gap: 0;
+    border-radius: 14px; overflow: visible;
+    margin-bottom: 0;
+    position: relative;
+  }
+
+  .layer-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 9px; font-weight: 800; letter-spacing: 0.15em;
+    text-transform: uppercase; padding: 16px 10px;
+    display: flex; align-items: center; justify-content: center;
+    min-width: 36px; flex-shrink: 0; border-radius: 12px 0 0 12px;
+  }
+
+  .layer-body {
+    flex: 1; display: flex; gap: 10px; padding: 14px 14px 14px 10px;
+    border-radius: 0 12px 12px 0; flex-wrap: wrap; align-items: flex-start;
+  }
+
+  /* Layer colour themes */
+  .l-client  .layer-label { background: #1e2a4a; color: #60a5fa; }
+  .l-client  .layer-body  { background: #111827; border: 1px solid #1e3a5f; border-left: none; }
+
+  .l-api     .layer-label { background: #2a1e3a; color: #c084fc; }
+  .l-api     .layer-body  { background: #110d1a; border: 1px solid #3b1f5f; border-left: none; }
+
+  .l-service .layer-label { background: #1a2e1a; color: #4ade80; }
+  .l-service .layer-body  { background: #0d160d; border: 1px solid #1f3d1f; border-left: none; }
+
+  .l-data    .layer-label { background: #2e2a0a; color: #fbbf24; }
+  .l-data    .layer-body  { background: #161209; border: 1px solid #3d350a; border-left: none; }
+
+  .l-ext     .layer-label { background: #2a1a1a; color: #f87171; }
+  .l-ext     .layer-body  { background: #160d0d; border: 1px solid #3d1f1f; border-left: none; }
+
+  /* Arrow connector between layers */
+  .connector {
+    display: flex; align-items: center; justify-content: center;
+    padding: 6px 0; gap: 20px; position: relative;
+  }
+  .conn-line {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .conn-arrow { font-size: 14px; color: #444; }
+  .conn-label { font-size: 9px; color: #555; font-weight: 600; letter-spacing: 0.06em; }
+  .conn-label.highlight { color: #7c3aed; }
+
+  /* Cards */
+  .box {
+    border-radius: 10px; padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 4px;
+    min-width: 140px; flex: 1; max-width: 220px;
+  }
+  .box-title { font-size: 11px; font-weight: 800; margin-bottom: 2px; }
+  .box-sub { font-size: 10px; color: #888; line-height: 1.5; }
+  .box-tag { font-size: 8px; font-weight: 700; letter-spacing: 0.08em; padding: 2px 6px; border-radius: 20px; display: inline-block; margin-top: 4px; width: fit-content; }
+
+  /* Client boxes */
+  .bx-blue { background: #0f1929; border: 1px solid #1e3a5f; }
+  .bx-blue .box-title { color: #93c5fd; }
+  .bx-blue .box-tag { background: #1e3a5f; color: #60a5fa; }
+
+  /* API boxes */
+  .bx-purple { background: #12091f; border: 1px solid #3b1f5f; }
+  .bx-purple .box-title { color: #c084fc; }
+  .bx-purple .box-tag { background: #2d1a4a; color: #a855f7; }
+
+  /* Service boxes */
+  .bx-green { background: #0a130a; border: 1px solid #1f3d1f; }
+  .bx-green .box-title { color: #4ade80; }
+  .bx-green .box-tag { background: #1a2e1a; color: #4ade80; }
+
+  /* Data boxes */
+  .bx-gold { background: #130f03; border: 1px solid #3d350a; }
+  .bx-gold .box-title { color: #fbbf24; }
+  .bx-gold .box-tag { background: #2a250a; color: #f59e0b; }
+
+  /* Ext boxes */
+  .bx-red { background: #130707; border: 1px solid #3d1f1f; }
+  .bx-red .box-title { color: #f87171; }
+  .bx-red .box-tag { background: #2a0f0f; color: #fca5a5; }
+
+  /* Critical path callout */
+  .critical-box {
+    margin-top: 28px; max-width: 960px;
+    background: #13090f; border: 1px solid #4c1d40;
+    border-radius: 14px; padding: 20px 24px;
+  }
+  .critical-title { font-size: 13px; font-weight: 800; color: #c084fc; margin-bottom: 14px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .critical-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .crit-item { }
+  .crit-label { font-size: 9px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 5px; }
+  .crit-text { font-size: 11px; color: #aaa; line-height: 1.6; }
+  .crit-code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 10px; background: #1a0f1a; color: #c084fc; padding: 6px 8px; border-radius: 6px; margin-top: 4px; display: block; line-height: 1.6; }
+
+  .privacy-note {
+    margin-top: 14px; background: #090d0a; border: 1px solid #1f3d1f;
+    border-radius: 10px; padding: 12px 16px;
+    font-size: 11px; color: #6b7280; line-height: 1.6;
+  }
+  .privacy-note strong { color: #4ade80; }
+
+  .divider-h { width: 100%; height: 1px; background: #1f1f2e; margin: 6px 0; }
+
+  .highlight-pill {
+    display: inline-block; background: #2d1a4a; color: #a855f7;
+    font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+    margin-left: 6px; vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-title">Don't Blink — Full System Architecture</div>
+<div class="page-sub">What runs on-device vs. what hits the server — and why it matters for trust</div>
+
+<div class="arch">
+
+  <!-- LAYER 1: CLIENT -->
+  <div class="layer l-client">
+    <div class="layer-label">Client · On-Device</div>
+    <div class="layer-body">
+
+      <div class="box bx-blue">
+        <div class="box-title">MediaPipe Face Mesh</div>
+        <div class="box-sub">468 facial landmarks detected at 30fps. Runs entirely as WASM on-device. No face data ever leaves the phone.</div>
+        <div class="box-tag">On-device ML</div>
+      </div>
+
+      <div class="box bx-blue">
+        <div class="box-title">Blink Detector</div>
+        <div class="box-sub">Eye Aspect Ratio (EAR) per frame. EAR &lt; 0.20 for 2+ consecutive frames = blink event. Tuned per ambient light.</div>
+        <div class="box-tag">Signal processing</div>
+      </div>
+
+      <div class="box bx-blue">
+        <div class="box-title">Micro-Movement Variance</div>
+        <div class="box-sub">Tracks position variance of 15 key landmarks across a rolling 90-frame window. Variance below threshold → photo detected → session killed.</div>
+        <div class="box-tag">Anti-cheat · passive</div>
+      </div>
+
+      <div class="box bx-blue">
+        <div class="box-title">Gaze Tracker</div>
+        <div class="box-sub">Iris landmark centroid → maps gaze direction to screen coordinates. Checks if gaze aligns with current scoop position (±80px tolerance).</div>
+        <div class="box-tag">Anti-cheat · active</div>
+      </div>
+
+      <div class="box bx-blue">
+        <div class="box-title">Session Event Logger</div>
+        <div class="box-sub">Signs each event (blink, gaze-match, gaze-miss, variance-flag) with server-issued HMAC key. Builds tamper-evident event chain sent at session end.</div>
+        <div class="box-tag">Trust layer</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONNECTOR 1 -->
+  <div class="connector">
+    <div class="conn-line">
+      <div class="conn-arrow">↕</div>
+      <div class="conn-label highlight">Session start: server issues token + scoop trajectory</div>
+    </div>
+    <div class="conn-line">
+      <div class="conn-arrow">↕</div>
+      <div class="conn-label highlight">Session end: client sends signed event log for validation</div>
+    </div>
+    <div class="conn-line">
+      <div class="conn-arrow">↕</div>
+      <div class="conn-label">No video, no frames — only landmark-derived events</div>
+    </div>
+  </div>
+
+  <!-- LAYER 2: API GATEWAY -->
+  <div class="layer l-api">
+    <div class="layer-label">API Gateway</div>
+    <div class="layer-body">
+
+      <div class="box bx-purple">
+        <div class="box-title">Session Init Endpoint</div>
+        <div class="box-sub">POST /challenge/start — checks daily limit, issues HMAC session token, returns pre-computed scoop trajectory (server-generated random path, not client-generated).</div>
+        <div class="box-tag">REST · auth required</div>
+      </div>
+
+      <div class="box bx-purple">
+        <div class="box-title">Score Submit Endpoint</div>
+        <div class="box-sub">POST /challenge/submit — receives signed event log + claimed duration. Routes to Score Validation Service before any reward is issued.</div>
+        <div class="box-tag">REST · signed payload</div>
+      </div>
+
+      <div class="box bx-purple">
+        <div class="box-title">Reward Status Endpoint</div>
+        <div class="box-sub">GET /challenge/reward/:sessionId — polls validation status, returns Zepto Cash amount once credited. Used to drive the reward reveal screen.</div>
+        <div class="box-tag">REST · polling</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONNECTOR 2 -->
+  <div class="connector">
+    <div class="conn-line">
+      <div class="conn-arrow">↓</div>
+      <div class="conn-label">Validated requests only</div>
+    </div>
+    <div class="conn-line">
+      <div class="conn-arrow">↓</div>
+      <div class="conn-label">Async reward pipeline</div>
+    </div>
+  </div>
+
+  <!-- LAYER 3: BACKEND SERVICES -->
+  <div class="layer l-service">
+    <div class="layer-label">Backend Services</div>
+    <div class="layer-body">
+
+      <div class="box bx-green">
+        <div class="box-title">Challenge Service</div>
+        <div class="box-sub">Generates session tokens (HMAC-SHA256). Pre-computes scoop trajectory — a time-stamped sequence of (x,y) positions. Server holds the expected gaze answers; client can't fake them.</div>
+        <div class="box-tag">Node.js / Go</div>
+      </div>
+
+      <div class="box bx-green">
+        <div class="box-title">Score Validation Service</div>
+        <div class="box-sub">Replays signed event log. Checks: HMAC signature chain intact, gaze events match expected scoop positions at each timestamp, variance flags absent, duration internally consistent. Flags anomalies.</div>
+        <div class="box-tag">Python · critical path</div>
+      </div>
+
+      <div class="box bx-green">
+        <div class="box-title">Daily Limit Service</div>
+        <div class="box-sub">Redis-backed per-user counter. One session per calendar day (IST). Enforced server-side only — client enforcement is meaningless. Resets at midnight.</div>
+        <div class="box-tag">Redis · stateful</div>
+      </div>
+
+      <div class="box bx-green">
+        <div class="box-title">Fraud Anomaly Detector</div>
+        <div class="box-sub">Async scoring after session submit. Flags: score always exactly 60.0s, no failed gaze-matches ever, abnormal blink timing patterns. High-risk sessions → manual review queue before ₹150 credit.</div>
+        <div class="box-tag">ML · async</div>
+      </div>
+
+      <div class="box bx-green">
+        <div class="box-title">Reward Service</div>
+        <div class="box-sub">Maps validated duration → tier → Zepto Cash amount. Calls Zepto Wallet API to credit. Sets 7-day expiry. Idempotent — retries safe. Emits reward event to analytics.</div>
+        <div class="box-tag">Integrates w/ wallet</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONNECTOR 3 -->
+  <div class="connector">
+    <div class="conn-line">
+      <div class="conn-arrow">↕</div>
+      <div class="conn-label">Read/write sessions, limits, fraud flags</div>
+    </div>
+    <div class="conn-line">
+      <div class="conn-arrow">↓</div>
+      <div class="conn-label">Event stream to analytics</div>
+    </div>
+  </div>
+
+  <!-- LAYER 4: DATA -->
+  <div class="layer l-data">
+    <div class="layer-label">Data Layer</div>
+    <div class="layer-body">
+
+      <div class="box bx-gold">
+        <div class="box-title">Redis</div>
+        <div class="box-sub">Daily limit counters (per user, TTL = midnight). Active session tokens. Rate limiting on API endpoints.</div>
+        <div class="box-tag">In-memory · existing</div>
+      </div>
+
+      <div class="box bx-gold">
+        <div class="box-title">PostgreSQL</div>
+        <div class="box-sub">Session records: token, user_id, scoop_trajectory, event_log_hash, validated_duration, reward_tier, status. Fraud review queue.</div>
+        <div class="box-tag">Relational · persistent</div>
+      </div>
+
+      <div class="box bx-gold">
+        <div class="box-title">Kafka Event Stream</div>
+        <div class="box-sub">Session completed, reward credited, fraud flagged events. Feeds existing Zepto analytics pipeline. Drives funnel metrics: opt-in rate, median duration, tier distribution.</div>
+        <div class="box-tag">Streaming · existing</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONNECTOR 4 -->
+  <div class="connector">
+    <div class="conn-line">
+      <div class="conn-arrow">↓</div>
+      <div class="conn-label">Reward credit call</div>
+    </div>
+  </div>
+
+  <!-- LAYER 5: EXTERNAL -->
+  <div class="layer l-ext">
+    <div class="layer-label">External Systems</div>
+    <div class="layer-body">
+
+      <div class="box bx-red">
+        <div class="box-title">Zepto Wallet API</div>
+        <div class="box-sub">Existing internal API. Reward Service calls credit_zepto_cash(user_id, amount, expiry, source="dont_blink"). No new wallet infrastructure required.</div>
+        <div class="box-tag">Internal API · existing</div>
+      </div>
+
+      <div class="box bx-red">
+        <div class="box-title">Zepto Analytics</div>
+        <div class="box-sub">Existing data pipeline. Consumes Kafka events. Tracks: daily active challengers, median stare duration, tier hit rates, cash redemption rate post-challenge.</div>
+        <div class="box-tag">Existing infra</div>
+      </div>
+
+      <div class="box bx-red">
+        <div class="box-title">Manual Review Queue</div>
+        <div class="box-sub">Internal ops tool. ₹150-tier claims flagged by Fraud Detector go here before credit. Ops reviews event log. V1 — lightweight; automate in V2 once baseline fraud rate is known.</div>
+        <div class="box-tag">Ops tooling · new · small</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- CRITICAL PATH -->
+<div class="critical-box">
+  <div class="critical-title">The Hard Problem: How does the server trust the client?</div>
+  <div class="critical-grid">
+
+    <div class="crit-item">
+      <div class="crit-label">Problem</div>
+      <div class="crit-text">All detection runs on-device. Nothing stops a modified client from posting <code style="color:#c084fc">duration=61</code> directly to the submit endpoint and claiming ₹150 every day.</div>
+    </div>
+
+    <div class="crit-item">
+      <div class="crit-label">Solution: Server-issued scoop path</div>
+      <div class="crit-text">The scoop trajectory is generated server-side at session start and never shared in full with the client — only the current position is revealed frame by frame via the signed token. A cheating client doesn't know where the scoop will move next, so it can't pre-fabricate matching gaze events.</div>
+      <code class="crit-code">
+        trajectory = [<br>
+        &nbsp; {t:15.2, x:0.82, y:0.31},<br>
+        &nbsp; {t:33.7, x:0.14, y:0.78},<br>
+        &nbsp; ...<br>
+        ] // server-held, never sent in full
+      </code>
+    </div>
+
+    <div class="crit-item">
+      <div class="crit-label">Solution: HMAC event chain</div>
+      <div class="crit-text">Each event the client logs is HMAC-signed with a per-session server-issued key. The server replays the event chain and verifies every signature. Inserting, removing, or modifying any event breaks the chain — server rejects the session.</div>
+      <code class="crit-code">
+        event = {<br>
+        &nbsp; type: "gaze_match",<br>
+        &nbsp; t: 15.3, x: 0.80, y: 0.29,<br>
+        &nbsp; hmac: sha256(prev_hash + payload + key)<br>
+        }
+      </code>
+    </div>
+
+  </div>
+
+  <div class="divider-h" style="margin-top:16px;"></div>
+  <div class="privacy-note">
+    <strong>Privacy:</strong> No video frames, no face images, no biometric data ever leave the device. The server receives only landmark-derived events (numbers, not faces). Compliant with India's DPDP Act 2023 — facial landmark coordinates are not classified as biometric data under the act when used transiently and not stored. Session event logs are deleted after 30 days.
+  </div>
+</div>
+
+</body>
+</html>
