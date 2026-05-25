@@ -1,24 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 :root {
-  /* Colors */
+  /* ── Game theme (screens 2–8) ── */
   --c-bg:       #0f0517;
   --c-surface:  #160924;
   --c-border:   #2a1a4e;
-  --c-purple:   #7c3aed;
-  --c-pink:     #ff2d6b;
+  --c-purple:   #7C35D4;
+  --c-pink:     #FF1A6C;
   --c-gold:     #fbbf24;
   --c-white:    #ffffff;
   --c-muted:    rgba(255, 255, 255, 0.45);
   --c-dim:      rgba(255, 255, 255, 0.08);
 
-  /* Typography */
-  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* ── App / light theme (screen 1 — order confirmation) ── */
+  --c-app-bg:       #ffffff;
+  --c-app-surface:  #f5f5f7;
+  --c-app-border:   #ebebeb;
+  --c-app-text:     #1a1a1a;
+  --c-app-muted:    #6b7280;
+  --c-app-lavender: #ede8ff;
+  --c-app-green:    #26c281;
+  --c-app-pink:     #FF1A6C;
 
-  /* Radii */
+  /* ── Typography ── */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* ── Radii ── */
   --r-sm: 12px;
   --r-md: 20px;
   --r-lg: 36px;
 
-  /* Easing */
+  /* ── Easing ── */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 

@@ -103,15 +103,37 @@ function delay(ms) {
 }
 
 // ── Event listeners ────────────────────────────────────────────────────────
+// ── Challenge bottom sheet ─────────────────────────────────────────────────
+function showChallengeSheet() {
+  const sheet   = document.getElementById('challenge-sheet');
+  const overlay = document.getElementById('sheet-overlay');
+  sheet.classList.add('visible');
+  overlay.classList.add('visible');
+}
+
+function hideChallengeSheet() {
+  const sheet   = document.getElementById('challenge-sheet');
+  const overlay = document.getElementById('sheet-overlay');
+  sheet.classList.remove('visible');
+  overlay.classList.remove('visible');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   buildTierList();
 
+  // Auto-show challenge sheet after 1.5s on order confirmation
+  setTimeout(showChallengeSheet, 1500);
+
+  // Overlay tap dismisses sheet
+  document.getElementById('sheet-overlay').addEventListener('click', hideChallengeSheet);
+
   // Screen 1: dare banner
   document.getElementById('btn-accept-dare').addEventListener('click', () => {
+    hideChallengeSheet();
     showScreen('rules');
   });
   document.getElementById('btn-skip').addEventListener('click', () => {
-    showScreen('confirmation');
+    hideChallengeSheet();
   });
 
   // Screen 2: start challenge

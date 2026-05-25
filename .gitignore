@@ -1,4 +1,7 @@
 .DS_Store
 *.pdf
+*.jpeg
+*.jpg
+*.png
 .superpowers/brainstorm/*/state/
 node_modules/

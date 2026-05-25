@@ -14,28 +14,93 @@
 <div class="phone-shell">
 
   <!-- ═══════════════════════════════════════════
-       SCREEN 1 — Order Confirmation + Dare Banner
+       SCREEN 1 — Order Confirmation (light theme) + Challenge Bottom Sheet
        ═══════════════════════════════════════════ -->
-  <div id="screen-confirmation" class="screen active">
-    <div style="flex:1; padding:28px 20px 0;">
-      <p class="label" style="margin-bottom:8px; color:var(--c-pink);">Order Confirmed</p>
-      <h2 class="h2" style="margin-bottom:4px;">Your ice cream is on its way 🍦</h2>
-      <p class="body" style="margin-bottom:24px;">Arriving in ~10 minutes</p>
-      <div style="background:var(--c-surface); border-radius:var(--r-sm); padding:16px; border:1px solid var(--c-border); margin-bottom:28px;">
-        <p class="h3" style="margin-bottom:4px;">2× Vanilla Soft Serve</p>
-        <p class="body">₹198 · Delivered to Home</p>
+  <div id="screen-confirmation" class="screen screen-light active">
+
+    <!-- Top bar -->
+    <div class="app-topbar">
+      <div class="app-topbar-left">
+        <div class="app-back-btn">&#8592;</div>
+        <div>
+          <div class="app-order-id">Order #ABCD1234</div>
+          <div class="app-order-sub">2 items</div>
+        </div>
+      </div>
+      <button class="app-help-btn">💬 Get Help</button>
+    </div>
+
+    <!-- Delivery status -->
+    <div class="app-status-band">
+      <div class="app-status-left">
+        <div class="app-status-icon">✓</div>
+        <div class="app-status-text">Order Confirmed</div>
+      </div>
+      <div class="app-eta-badge">⚡ 8 MINS</div>
+    </div>
+
+    <div class="app-divider"></div>
+
+    <!-- Items -->
+    <div class="app-section-header">2 items in order</div>
+    <div class="app-items">
+      <div class="app-item-row">
+        <div class="app-item-icon">🍦</div>
+        <div class="app-item-details">
+          <div class="app-item-name">Mango Kulfi Stick</div>
+          <div class="app-item-meta">75 ml · 2 units</div>
+        </div>
+        <div class="app-item-price">₹198</div>
+      </div>
+      <div class="app-item-row">
+        <div class="app-item-icon">🍨</div>
+        <div class="app-item-details">
+          <div class="app-item-name">Vanilla Tub</div>
+          <div class="app-item-meta">500 ml · 1 unit</div>
+        </div>
+        <div class="app-item-price">₹149</div>
       </div>
     </div>
-    <!-- Dare banner -->
-    <div style="padding:0 20px 36px;">
-      <div style="background:linear-gradient(135deg,rgba(124,58,237,0.18),rgba(255,45,107,0.18)); border:1px solid rgba(255,45,107,0.35); border-radius:var(--r-md); padding:20px 16px;">
-        <p class="label" style="color:var(--c-pink); margin-bottom:6px;">World Record: 1 hr 5 min 11 sec</p>
-        <h3 class="h3" style="margin-bottom:8px;">Think you can outlast it? 👀</h3>
-        <p class="body" style="margin-bottom:18px;">Stare at the scoop. Don't blink. Win up to ₹150 in Zepto Cash.</p>
-        <button class="btn btn-primary" id="btn-accept-dare">I ACCEPT THE DARE</button>
-        <button class="btn btn-ghost" style="margin-top:10px;" id="btn-skip">Maybe next time</button>
-      </div>
+
+    <div class="app-divider"></div>
+
+    <!-- Bill summary -->
+    <div class="app-bill">
+      <div class="app-bill-title">Bill Summary</div>
+      <div class="app-bill-row"><span>Item Total</span><span>₹347</span></div>
+      <div class="app-bill-row"><span>Delivery Fee</span><span class="app-free">FREE</span></div>
+      <div class="app-bill-row"><span>Handling Fee</span><span class="app-free">FREE</span></div>
+      <div class="app-bill-divider"></div>
+      <div class="app-bill-row app-bill-total"><span>Total Bill</span><span>₹347</span></div>
     </div>
+
+    <!-- Bottom actions -->
+    <div class="app-actions">
+      <button class="app-btn-outline">Rate Order</button>
+      <button class="app-btn-solid">Order Again</button>
+    </div>
+
+    <!-- Overlay (dims order screen when sheet is visible) -->
+    <div id="sheet-overlay" class="sheet-overlay"></div>
+
+    <!-- Challenge bottom sheet -->
+    <div id="challenge-sheet" class="challenge-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-tag">🍦 &nbsp;Don't Blink Challenge</div>
+      <div class="sheet-headline">Think you can beat the world record?</div>
+      <div class="sheet-record">1 hr 5 min 11 sec &nbsp;·&nbsp; Catalin Anghel, Bucharest</div>
+      <div class="sheet-body">Stare at the moving scoop without blinking. Your front camera judges every twitch. Win up to <strong>₹150</strong> in Zepto Cash — credited instantly to your wallet.</div>
+      <div class="sheet-tiers">
+        <div class="sheet-tier"><div class="tier-secs">10s</div><div class="tier-cash">₹10</div></div>
+        <div class="sheet-tier"><div class="tier-secs">20s</div><div class="tier-cash">₹30</div></div>
+        <div class="sheet-tier"><div class="tier-secs">30s</div><div class="tier-cash">₹60</div></div>
+        <div class="sheet-tier"><div class="tier-secs">45s</div><div class="tier-cash">₹100</div></div>
+        <div class="sheet-tier sheet-tier-top"><div class="tier-secs">60s+</div><div class="tier-cash">₹150</div></div>
+      </div>
+      <button class="btn btn-primary" id="btn-accept-dare">I ACCEPT THE DARE &nbsp;👀</button>
+      <button class="btn btn-ghost sheet-skip" id="btn-skip">Not now</button>
+    </div>
+
   </div>
 
   <!-- ═══════════════════════════════════
