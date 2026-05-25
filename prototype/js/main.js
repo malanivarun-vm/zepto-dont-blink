@@ -3,6 +3,7 @@ import { TIERS } from './utils/rewards.js';
 import { startCamera, stopCamera } from './mediapipe.js';
 import { runCalibration } from './calibration.js';
 import { startChallenge } from './challenge.js';
+import { startScoop } from './scoop.js';
 import { drawShareCard } from './share.js';
 
 let latestFrame = null; // most recent MediaPipe frame, used by calibration
@@ -82,6 +83,16 @@ function startStareChallenge() {
   showScreen('stare');
   stopCamera(); // stop camera instance running on hidden countdown video
 
+  // Cone moves from the moment the screen loads — not on challenge start
+  startScoop(null);
+
+  // Follow-hint: visible for 5s then fades out
+  const hint = document.getElementById('follow-hint');
+  if (hint) {
+    hint.style.opacity = '1';
+    setTimeout(() => { hint.style.opacity = '0'; }, 5000);
+  }
+
   const videoEl = document.getElementById('camera-feed');
 
   const onFrame = startChallenge((durationSecs) => {
@@ -118,13 +129,30 @@ function hideChallengeSheet() {
   overlay.classList.remove('visible');
 }
 
+// ── Home screen T&C sheet ──────────────────────────────────────────────────
+function showTncSheet() {
+  document.getElementById('tnc-sheet').classList.add('visible');
+  document.getElementById('tnc-overlay').classList.add('visible');
+}
+
+function hideTncSheet() {
+  document.getElementById('tnc-sheet').classList.remove('visible');
+  document.getElementById('tnc-overlay').classList.remove('visible');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   buildTierList();
 
-  // Auto-show challenge sheet after 1.5s on order confirmation
-  setTimeout(showChallengeSheet, 1500);
+  // Home screen: banner tap → T&C sheet
+  document.getElementById('home-banner').addEventListener('click', showTncSheet);
+  document.getElementById('tnc-overlay').addEventListener('click', hideTncSheet);
+  document.getElementById('btn-tnc-order').addEventListener('click', () => {
+    hideTncSheet();
+    showScreen('confirmation');
+    setTimeout(showChallengeSheet, 1500);
+  });
 
-  // Overlay tap dismisses sheet
+  // Overlay tap dismisses challenge sheet
   document.getElementById('sheet-overlay').addEventListener('click', hideChallengeSheet);
 
   // Screen 1: dare banner

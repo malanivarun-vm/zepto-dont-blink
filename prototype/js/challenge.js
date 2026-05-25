@@ -1,8 +1,8 @@
 import { calculateReward, TIERS, nextTier } from './utils/rewards.js';
-import { startScoop, stopScoop, currentZone } from './scoop.js';
+import { stopScoop, currentZone } from './scoop.js';
 import { session } from './session.js';
 
-const MAX_SECONDS = 65; // stop auto-awarding after 65s
+const MAX_SECONDS = 90; // ladder tops out at 90s
 
 let blinkFrameCount = 0;
 const BLINK_FRAMES_REQUIRED = 2; // 2 consecutive low-EAR frames = blink
@@ -20,7 +20,6 @@ export function startChallenge(onBlink) {
   startTimestamp = Date.now();
   session.startTime = startTimestamp;
 
-  startScoop(null); // zone changes don't stop the challenge — visual only
   startTimer();
 
   return function onFrame(frame) {

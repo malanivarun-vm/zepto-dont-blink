@@ -14,9 +14,143 @@
 <div class="phone-shell">
 
   <!-- ═══════════════════════════════════════════
+       SCREEN 0 — Home Screen + T&C Bottom Sheet
+       ═══════════════════════════════════════════ -->
+  <div id="screen-home" class="screen screen-light active">
+
+    <!-- Top bar -->
+    <div class="home-topbar">
+      <div>
+        <div class="home-eta"><span class="bolt">⚡</span> 8 minutes</div>
+        <div class="home-loc">Home · 404, 4th Floor, Koramangala ▾</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div class="home-cash-badge">₹0</div>
+        <div class="home-avatar">V</div>
+      </div>
+    </div>
+
+    <!-- Store tabs -->
+    <div class="store-tabs">
+      <div class="store-tab active">zepto</div>
+      <div class="store-tab">Summer's Store</div>
+      <div class="store-tab">Super Mall.</div>
+      <div class="store-tab">cafe ₹39</div>
+    </div>
+
+    <!-- Search -->
+    <div class="home-search-wrap">
+      <div class="home-search-bar">🔍 Search for ice cream, kulfi…</div>
+      <div class="pool-badge">🏊 POOL<br>READY ▶</div>
+    </div>
+
+    <!-- Category pills -->
+    <div class="cat-pills">
+      <div class="cat-pill">All</div>
+      <div class="cat-pill active">Ice Cream</div>
+      <div class="cat-pill">Fresh</div>
+      <div class="cat-pill">Home</div>
+      <div class="cat-pill">Fashion</div>
+    </div>
+
+    <!-- Feed -->
+    <div class="home-feed">
+
+      <!-- Don't Blink Challenge hero banner -->
+      <div id="home-banner" class="hero-banner">
+        <div class="hero-tag">🍦 &nbsp;NEW · FOR YOU</div>
+        <div class="hero-title">Don't Blink<br>Challenge</div>
+        <div class="hero-sub">Order ₹99+ of ice cream · Win up to ₹150 Cash</div>
+        <div class="hero-tiers">
+          <div class="hero-tier"><div class="ht-sec">10s</div><div class="ht-cash">₹10</div></div>
+          <div class="hero-tier"><div class="ht-sec">30s</div><div class="ht-cash">₹60</div></div>
+          <div class="hero-tier"><div class="ht-sec">60s</div><div class="ht-cash">₹100</div></div>
+          <div class="hero-tier hero-tier-top"><div class="ht-sec">90s</div><div class="ht-cash">₹150</div></div>
+        </div>
+        <div class="hero-cta">See rules &amp; T&amp;C ›</div>
+        <div class="hero-cone">🍦</div>
+        <div class="hero-privacy">🔒 &nbsp;No video is recorded or stored</div>
+      </div>
+
+      <!-- Shop by category -->
+      <div class="cat-section-title">Shop by category</div>
+      <div class="cat-grid">
+        <div class="cat-card"><span class="cat-emoji">🫙</span><div class="cat-name">Tubs</div></div>
+        <div class="cat-card"><span class="cat-emoji">🍡</span><div class="cat-name">Sticks</div></div>
+        <div class="cat-card"><span class="cat-emoji">🍦</span><div class="cat-name">Cones</div></div>
+        <div class="cat-card"><span class="cat-emoji">🧁</span><div class="cat-name">Cakes</div></div>
+        <div class="cat-card"><span class="cat-emoji">🥛</span><div class="cat-name">Dairy</div></div>
+        <div class="cat-card"><span class="cat-emoji">🧃</span><div class="cat-name">Drinks</div></div>
+      </div>
+
+    </div>
+
+    <!-- Bottom delivery bar -->
+    <div class="delivery-bar">
+      🔒 &nbsp;Unlock free delivery · Shop for <span style="color:#FF1A6C; font-weight:800; margin-left:3px;">₹99</span>
+    </div>
+
+    <!-- Bottom nav -->
+    <div class="bottom-nav">
+      <div class="nav-item active"><span class="nav-icon">🏠</span>Home</div>
+      <div class="nav-item"><span class="nav-icon">⊞</span>Categories</div>
+      <div class="nav-item"><span class="nav-icon">↺</span>Buy Again</div>
+      <div class="nav-item"><span class="nav-icon">☕</span>Cafe</div>
+    </div>
+
+    <!-- T&C overlay -->
+    <div id="tnc-overlay" class="sheet-overlay"></div>
+
+    <!-- T&C bottom sheet -->
+    <div id="tnc-sheet" class="tnc-sheet">
+      <div class="sheet-handle"></div>
+      <div class="tnc-tag">🍦 &nbsp;DON'T BLINK CHALLENGE</div>
+      <div class="tnc-title">Rules &amp;<br>How to Win</div>
+      <div class="tnc-record">World record: 1 hr 5 min 11 sec &nbsp;·&nbsp; Catalin Anghel, Bucharest</div>
+
+      <!-- Unlock condition -->
+      <div class="tnc-unlock">
+        <div class="tnc-unlock-icon">🛒</div>
+        <div class="tnc-unlock-text">Order <strong>₹99+ of ice cream</strong> on Zepto to unlock the challenge. Available once per day.</div>
+      </div>
+
+      <!-- Reward ladder -->
+      <div class="tnc-tiers-label">Your reward ladder</div>
+      <div class="tnc-tiers">
+        <div class="tnc-tier"><div class="tt-s">10s</div><div class="tt-r">₹10</div></div>
+        <div class="tnc-tier"><div class="tt-s">30s</div><div class="tt-r">₹60</div></div>
+        <div class="tnc-tier"><div class="tt-s">60s</div><div class="tt-r">₹100</div></div>
+        <div class="tnc-tier tnc-tier-top"><div class="tt-s">90s</div><div class="tt-r">₹150</div></div>
+      </div>
+
+      <!-- Moonshot -->
+      <div class="tnc-moonshot">
+        <div class="tnc-moonshot-tag">🏆 &nbsp;MOONSHOT</div>
+        <div class="tnc-moonshot-title">Break the world record?<br>Ice cream for life. 🍦</div>
+        <div class="tnc-moonshot-body">If you beat 1 hr 5 min 11 sec without blinking, Zepto will send you free ice cream every month — for life.</div>
+        <div class="tnc-moonshot-record">Current record: Catalin Anghel, Bucharest · 2003</div>
+      </div>
+
+      <!-- Rules -->
+      <div class="tnc-rules">
+        <div class="tnc-rule"><div class="tnc-rule-dot"></div>Your front camera watches for blinks — no video is ever recorded or stored.</div>
+        <div class="tnc-rule"><div class="tnc-rule-dot"></div>Follow the moving ice cream cone with your eyes. First blink ends the game.</div>
+        <div class="tnc-rule"><div class="tnc-rule-dot"></div>Zepto Cash is credited instantly to your wallet after the challenge.</div>
+        <div class="tnc-rule"><div class="tnc-rule-dot"></div>One attempt per day per account.</div>
+      </div>
+
+      <!-- Privacy -->
+      <div class="tnc-privacy">🔒 &nbsp;No video is recorded, stored, or shared. Detection happens entirely on your device.</div>
+
+      <button class="btn btn-primary" id="btn-tnc-order">ORDER ICE CREAM &amp; UNLOCK →</button>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
        SCREEN 1 — Order Confirmation (light theme) + Challenge Bottom Sheet
        ═══════════════════════════════════════════ -->
-  <div id="screen-confirmation" class="screen screen-light active">
+  <div id="screen-confirmation" class="screen screen-light">
 
     <!-- Top bar -->
     <div class="app-topbar">
@@ -92,10 +226,9 @@
       <div class="sheet-body">Stare at the moving scoop without blinking. Your front camera judges every twitch. Win up to <strong>₹150</strong> in Zepto Cash — credited instantly to your wallet.</div>
       <div class="sheet-tiers">
         <div class="sheet-tier"><div class="tier-secs">10s</div><div class="tier-cash">₹10</div></div>
-        <div class="sheet-tier"><div class="tier-secs">20s</div><div class="tier-cash">₹30</div></div>
         <div class="sheet-tier"><div class="tier-secs">30s</div><div class="tier-cash">₹60</div></div>
-        <div class="sheet-tier"><div class="tier-secs">45s</div><div class="tier-cash">₹100</div></div>
-        <div class="sheet-tier sheet-tier-top"><div class="tier-secs">60s+</div><div class="tier-cash">₹150</div></div>
+        <div class="sheet-tier"><div class="tier-secs">60s</div><div class="tier-cash">₹100</div></div>
+        <div class="sheet-tier sheet-tier-top"><div class="tier-secs">90s+</div><div class="tier-cash">₹150</div></div>
       </div>
       <button class="btn btn-primary" id="btn-accept-dare">I ACCEPT THE DARE &nbsp;👀</button>
       <button class="btn btn-ghost sheet-skip" id="btn-skip">Not now</button>
@@ -112,7 +245,15 @@
       <h1 class="h1" style="margin-bottom:14px;">The rules<br>are simple.</h1>
       <p class="body" style="margin-bottom:32px;">Stare at the moving scoop. Your front camera detects every blink. First blink ends the game — earn Zepto Cash for every second you hold.</p>
       <!-- Tier rows — populated by main.js -->
-      <div id="tier-list" style="display:flex; flex-direction:column; gap:8px; margin-bottom:28px;"></div>
+      <div id="tier-list" style="display:flex; flex-direction:column; gap:8px; margin-bottom:20px;"></div>
+
+      <!-- Moonshot -->
+      <div class="moonshot-card" style="margin-bottom:20px;">
+        <div class="ms-tag">🏆 &nbsp;MOONSHOT</div>
+        <div class="ms-title">Break the world record?<br>Ice cream for life.</div>
+        <div class="ms-body">Beat 1 hr 5 min 11 sec and Zepto sends you free ice cream every month — forever.</div>
+      </div>
+
       <p class="label" style="margin-bottom:4px;">Once per day. Your record is yours.</p>
     </div>
     <div style="padding:0 20px 36px;">
@@ -158,6 +299,7 @@
     </div>
     <!-- Scoop zone -->
     <div id="scoop-zone" style="flex:1; position:relative; overflow:hidden;">
+      <div id="follow-hint">👀 Follow the cone</div>
       <div id="scoop-emoji">🍦</div>
       <!-- Gaze ring — repositioned by challenge.js to match scoop -->
       <div id="gaze-ring" style="
