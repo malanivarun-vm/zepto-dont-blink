@@ -58,16 +58,23 @@
 
       <!-- Don't Blink Challenge hero banner -->
       <div id="home-banner" class="hero-banner">
-        <div class="hero-tag">🍦 &nbsp;NEW · FOR YOU</div>
-        <div class="hero-title">Don't Blink<br>Challenge</div>
-        <div class="hero-sub">Order ₹99+ of ice cream · Win up to ₹150 Cash</div>
-        <div class="hero-tiers">
-          <div class="hero-tier"><div class="ht-sec">10s</div><div class="ht-cash">₹10</div></div>
-          <div class="hero-tier"><div class="ht-sec">30s</div><div class="ht-cash">₹60</div></div>
-          <div class="hero-tier"><div class="ht-sec">60s</div><div class="ht-cash">₹100</div></div>
-          <div class="hero-tier hero-tier-top"><div class="ht-sec">90s</div><div class="ht-cash">₹150</div></div>
+        <!-- Glow blobs -->
+        <div class="hero-glow hero-glow-pink"></div>
+        <div class="hero-glow hero-glow-purple"></div>
+        <!-- Tag -->
+        <div class="hero-tag">👁️ &nbsp;DARE TO PLAY</div>
+        <!-- Mixed-weight title -->
+        <div class="hero-title-block">
+          <span class="hero-dont">DON'T</span>
+          <span class="hero-blink">BLINK</span>
+          <span class="hero-challenge">CHALLENGE</span>
         </div>
-        <div class="hero-cta">See rules &amp; T&amp;C ›</div>
+        <!-- Reward pill + CTA -->
+        <div class="hero-action-row">
+          <div class="hero-reward-pill">Win up to ₹150 💰</div>
+          <div class="hero-cta">Play now ›</div>
+        </div>
+        <!-- Ghost cone -->
         <div class="hero-cone">🍦</div>
         <div class="hero-privacy">🔒 &nbsp;No video is recorded or stored</div>
       </div>
@@ -103,46 +110,51 @@
 
     <!-- T&C bottom sheet -->
     <div id="tnc-sheet" class="tnc-sheet">
-      <div class="sheet-handle"></div>
-      <div class="tnc-tag">🍦 &nbsp;DON'T BLINK CHALLENGE</div>
-      <div class="tnc-title">Rules &amp;<br>How to Win</div>
-      <div class="tnc-record">World record: 1 hr 5 min 11 sec &nbsp;·&nbsp; Catalin Anghel, Bucharest</div>
+      <div class="tnc-scroll">
+        <div class="sheet-handle"></div>
+        <div class="tnc-tag">🍦 &nbsp;DON'T BLINK CHALLENGE</div>
+        <div class="tnc-title">Rules &amp;<br>How to Win</div>
+        <div class="tnc-record">World record: 1 hr 5 min 11 sec &nbsp;·&nbsp; Catalin Anghel, Bucharest</div>
 
-      <!-- Unlock condition -->
-      <div class="tnc-unlock">
-        <div class="tnc-unlock-icon">🛒</div>
-        <div class="tnc-unlock-text">Order <strong>₹99+ of ice cream</strong> on Zepto to unlock the challenge. Available once per day.</div>
+        <!-- Unlock condition -->
+        <div class="tnc-unlock">
+          <div class="tnc-unlock-icon">🛒</div>
+          <div class="tnc-unlock-text">Order <strong>₹99+ of ice cream</strong> on Zepto to unlock the challenge. Available once per day.</div>
+        </div>
+
+        <!-- Reward ladder -->
+        <div class="tnc-tiers-label">Your reward ladder</div>
+        <div class="tnc-tiers">
+          <div class="tnc-tier"><div class="tt-s">10s</div><div class="tt-r">₹10</div></div>
+          <div class="tnc-tier"><div class="tt-s">30s</div><div class="tt-r">₹60</div></div>
+          <div class="tnc-tier"><div class="tt-s">60s</div><div class="tt-r">₹100</div></div>
+          <div class="tnc-tier tnc-tier-top"><div class="tt-s">90s</div><div class="tt-r">₹150</div></div>
+        </div>
+
+        <!-- Moonshot -->
+        <div class="tnc-moonshot">
+          <div class="tnc-moonshot-tag">🏆 &nbsp;MOONSHOT</div>
+          <div class="tnc-moonshot-title">Break the world record?<br>Ice cream for life. 🍦</div>
+          <div class="tnc-moonshot-body">If you beat 1 hr 5 min 11 sec without blinking, Zepto will send you free ice cream every month — for life.</div>
+          <div class="tnc-moonshot-record">Current record: Catalin Anghel, Bucharest · 2003</div>
+        </div>
+
+        <!-- Rules -->
+        <div class="tnc-rules">
+          <div class="tnc-rule"><div class="tnc-rule-dot"></div>Your front camera watches for blinks — no video is ever recorded or stored.</div>
+          <div class="tnc-rule"><div class="tnc-rule-dot"></div>Follow the moving ice cream cone with your eyes. First blink ends the game.</div>
+          <div class="tnc-rule"><div class="tnc-rule-dot"></div>Zepto Cash is credited instantly to your wallet after the challenge.</div>
+          <div class="tnc-rule"><div class="tnc-rule-dot"></div>One attempt per day per account.</div>
+        </div>
+
+        <!-- Privacy -->
+        <div class="tnc-privacy">🔒 &nbsp;No video is recorded, stored, or shared. Detection happens entirely on your device.</div>
       </div>
 
-      <!-- Reward ladder -->
-      <div class="tnc-tiers-label">Your reward ladder</div>
-      <div class="tnc-tiers">
-        <div class="tnc-tier"><div class="tt-s">10s</div><div class="tt-r">₹10</div></div>
-        <div class="tnc-tier"><div class="tt-s">30s</div><div class="tt-r">₹60</div></div>
-        <div class="tnc-tier"><div class="tt-s">60s</div><div class="tt-r">₹100</div></div>
-        <div class="tnc-tier tnc-tier-top"><div class="tt-s">90s</div><div class="tt-r">₹150</div></div>
+      <!-- Sticky CTA — always visible outside the scroll area -->
+      <div class="tnc-cta-footer">
+        <button class="btn btn-primary" id="btn-tnc-order">ORDER ICE CREAM &amp; UNLOCK →</button>
       </div>
-
-      <!-- Moonshot -->
-      <div class="tnc-moonshot">
-        <div class="tnc-moonshot-tag">🏆 &nbsp;MOONSHOT</div>
-        <div class="tnc-moonshot-title">Break the world record?<br>Ice cream for life. 🍦</div>
-        <div class="tnc-moonshot-body">If you beat 1 hr 5 min 11 sec without blinking, Zepto will send you free ice cream every month — for life.</div>
-        <div class="tnc-moonshot-record">Current record: Catalin Anghel, Bucharest · 2003</div>
-      </div>
-
-      <!-- Rules -->
-      <div class="tnc-rules">
-        <div class="tnc-rule"><div class="tnc-rule-dot"></div>Your front camera watches for blinks — no video is ever recorded or stored.</div>
-        <div class="tnc-rule"><div class="tnc-rule-dot"></div>Follow the moving ice cream cone with your eyes. First blink ends the game.</div>
-        <div class="tnc-rule"><div class="tnc-rule-dot"></div>Zepto Cash is credited instantly to your wallet after the challenge.</div>
-        <div class="tnc-rule"><div class="tnc-rule-dot"></div>One attempt per day per account.</div>
-      </div>
-
-      <!-- Privacy -->
-      <div class="tnc-privacy">🔒 &nbsp;No video is recorded, stored, or shared. Detection happens entirely on your device.</div>
-
-      <button class="btn btn-primary" id="btn-tnc-order">ORDER ICE CREAM &amp; UNLOCK →</button>
     </div>
 
   </div>
@@ -276,6 +288,7 @@
        SCREEN 4 — Gaze Calibration
        ═══════════════════════════════ -->
   <div id="screen-calibration" class="screen" style="align-items:center; justify-content:center; position:relative;">
+    <p class="label" style="position:absolute; top:32px; letter-spacing:0.08em; color:rgba(255,255,255,0.4);">GAZE CALIBRATION</p>
     <p class="label" id="cal-instruction" style="position:absolute; top:60px;">Look at the dot</p>
     <div id="cal-dot"></div>
     <p class="body" style="position:absolute; bottom:60px; text-align:center; padding:0 40px;">Keep your eyes on the dot — don't blink</p>
@@ -286,16 +299,33 @@
        ═══════════════════════════════════ -->
   <div id="screen-stare" class="screen" style="flex-direction:column;">
     <!-- Camera strip -->
-    <div style="width:100%; height:88px; background:#000; position:relative; flex-shrink:0; overflow:hidden;">
+    <div style="width:100%; height:160px; background:#000; position:relative; flex-shrink:0; overflow:hidden;">
       <video id="camera-feed" autoplay muted playsinline
         style="width:100%; height:100%; object-fit:cover; opacity:0.75; transform:scaleX(-1);"></video>
       <div style="position:absolute; top:10px; right:12px;" class="live-badge">
         <div class="live-dot"></div>
         <span class="label" style="color:var(--c-pink);">LIVE</span>
       </div>
-      <p class="label" style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); white-space:nowrap;">
+      <!-- Face guide: corner brackets -->
+      <div id="face-guide" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:220px; height:136px; pointer-events:none;">
+        <span class="label" style="position:absolute; top:-18px; left:50%; transform:translateX(-50%); white-space:nowrap; color:rgba(255,255,255,0.5); letter-spacing:0.06em;">KEEP FACE HERE</span>
+        <div style="position:absolute;top:0;left:0;width:22px;height:3px;background:rgba(255,255,255,0.6);"></div>
+        <div style="position:absolute;top:0;left:0;width:3px;height:22px;background:rgba(255,255,255,0.6);"></div>
+        <div style="position:absolute;top:0;right:0;width:22px;height:3px;background:rgba(255,255,255,0.6);"></div>
+        <div style="position:absolute;top:0;right:0;width:3px;height:22px;background:rgba(255,255,255,0.6);"></div>
+        <div style="position:absolute;bottom:0;left:0;width:22px;height:3px;background:rgba(255,255,255,0.6);"></div>
+        <div style="position:absolute;bottom:0;left:0;width:3px;height:22px;background:rgba(255,255,255,0.6);"></div>
+        <div style="position:absolute;bottom:0;right:0;width:22px;height:3px;background:rgba(255,255,255,0.6);"></div>
+        <div style="position:absolute;bottom:0;right:0;width:3px;height:22px;background:rgba(255,255,255,0.6);"></div>
+      </div>
+      <p id="blink-detection-badge" class="label" style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); white-space:nowrap;">
         Blink detection · active
       </p>
+      <!-- Face-lost overlay — shown when face leaves the guide box -->
+      <div id="face-lost-overlay" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.82); flex-direction:column; align-items:center; justify-content:center; gap:4px;">
+        <span style="font-size:18px;">👤</span>
+        <span class="label" style="color:var(--c-white); text-align:center; letter-spacing:0.04em;">MOVE YOUR FACE INTO THE FRAME</span>
+      </div>
     </div>
     <!-- Scoop zone -->
     <div id="scoop-zone" style="flex:1; position:relative; overflow:hidden;">

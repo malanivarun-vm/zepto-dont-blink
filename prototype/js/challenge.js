@@ -7,16 +7,27 @@ const MAX_SECONDS = 90; // ladder tops out at 90s
 let blinkFrameCount = 0;
 const BLINK_FRAMES_REQUIRED = 2; // 2 consecutive low-EAR frames = blink
 
+// Debounce: require this many consecutive no-face frames before pausing (~0.3s at 30fps)
+const NO_FACE_THRESHOLD = 10;
+let noFaceFrameCount = 0;
+
 let timerInterval = null;
 let startTimestamp = null;
+let totalPausedMs = 0;   // accumulated pause duration, excluded from elapsed
+let pauseStartTime = null;
+let paused = false;
 let elapsed = 0; // seconds
 let running = false;
 
 // startChallenge(onBlink)
 // onBlink: called with (durationSecs) when blink is detected
 export function startChallenge(onBlink) {
-  running      = true;
+  running        = true;
+  paused         = false;
   blinkFrameCount = 0;
+  noFaceFrameCount = 0;
+  totalPausedMs  = 0;
+  pauseStartTime = null;
   startTimestamp = Date.now();
   session.startTime = startTimestamp;
 
@@ -24,6 +35,20 @@ export function startChallenge(onBlink) {
 
   return function onFrame(frame) {
     if (!running) return;
+
+    if (!frame.faceDetected) {
+      noFaceFrameCount++;
+      if (!paused && noFaceFrameCount >= NO_FACE_THRESHOLD) {
+        pauseForFaceLost();
+      }
+      return;
+    }
+
+    // Face is back
+    noFaceFrameCount = 0;
+    if (paused) {
+      resumeFromFaceLost();
+    }
 
     // Blink detection — require 2 consecutive frames
     if (frame.blink) {
@@ -47,10 +72,32 @@ export function startChallenge(onBlink) {
   };
 }
 
+function pauseForFaceLost() {
+  paused = true;
+  pauseStartTime = Date.now();
+  blinkFrameCount = 0; // clear any partial blink state before pause
+  setFaceLostOverlay(true);
+}
+
+function resumeFromFaceLost() {
+  paused = false;
+  totalPausedMs += Date.now() - pauseStartTime;
+  pauseStartTime = null;
+  blinkFrameCount = 0; // clear stale blink state after gap
+  setFaceLostOverlay(false);
+}
+
+function setFaceLostOverlay(show) {
+  const overlay = document.getElementById('face-lost-overlay');
+  if (overlay) overlay.style.display = show ? 'flex' : 'none';
+  const badge = document.getElementById('blink-detection-badge');
+  if (badge) badge.textContent = show ? '⏸ Align your face to resume' : 'Blink detection · active';
+}
+
 function startTimer() {
   timerInterval = setInterval(() => {
-    if (!running) return;
-    elapsed = (Date.now() - startTimestamp) / 1000;
+    if (!running || paused) return;
+    elapsed = (Date.now() - startTimestamp - totalPausedMs) / 1000;
     updateHUD(elapsed);
   }, 100); // 10fps is enough for display
 }
@@ -93,7 +140,7 @@ function endChallenge(onBlink) {
   clearInterval(timerInterval);
   stopScoop();
 
-  const durationSecs = (Date.now() - startTimestamp) / 1000;
+  const durationSecs = (Date.now() - startTimestamp - totalPausedMs) / 1000;
   session.endTime      = Date.now();
   session.durationSecs = durationSecs;
   session.reward       = calculateReward(durationSecs);
@@ -103,6 +150,8 @@ function endChallenge(onBlink) {
 
 export function stopChallenge() {
   running = false;
+  paused  = false;
   clearInterval(timerInterval);
   stopScoop();
+  setFaceLostOverlay(false);
 }

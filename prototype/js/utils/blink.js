@@ -1,4 +1,4 @@
-export const EAR_THRESHOLD = 0.20; // EAR below this = blink
+export const EAR_THRESHOLD = 0.25; // EAR below this = blink
 
 // euclidean distance between two landmark points {x, y}
 function dist(a, b) {

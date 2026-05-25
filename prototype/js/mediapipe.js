@@ -28,8 +28,21 @@ export function startCamera(videoEl, onFrame) {
   });
 
   faceMesh.onResults((results) => {
-    if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) return;
+    if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
+      onFrame({ faceDetected: false });
+      return;
+    }
     const lm = results.multiFaceLandmarks[0];
+
+    // Nose tip (lm[1]) must be within the visible guide box region.
+    // Bounds are intentionally generous on x, tighter on y — laptop cameras show
+    // a wider crop so the visible vertical range is roughly y 0.33–0.67.
+    const noseX = 1 - lm[1].x; // mirrored to match display
+    const noseY = lm[1].y;
+    if (noseX < 0.2 || noseX > 0.8 || noseY < 0.30 || noseY > 0.72) {
+      onFrame({ faceDetected: false });
+      return;
+    }
 
     const leftEAR  = calculateEAR(LEFT_EYE.map(i => lm[i]));
     const rightEAR = calculateEAR(RIGHT_EYE.map(i => lm[i]));
@@ -41,6 +54,7 @@ export function startCamera(videoEl, onFrame) {
     const irisZone = getZoneForIris(irisX, irisY);
 
     onFrame({
+      faceDetected: true,
       leftEAR,
       rightEAR,
       avgEAR,

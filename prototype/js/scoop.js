@@ -17,7 +17,7 @@ const SEQUENCES = [
   [4, 2, 1, 0, 3, 4],
 ];
 
-const ZONE_PAUSE_MS  = 12_000; // hold per zone (10–15s range, we use 12s)
+const ZONE_PAUSE_MS  = 5_000; // hold per zone before drifting to next
 const DRIFT_DURATION = 3_500;  // CSS transition duration in ms (3–4s spec)
 
 let scoopEl    = null;
